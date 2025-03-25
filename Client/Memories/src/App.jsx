@@ -8,8 +8,10 @@ import Form from './components/Form/Form'
 import { styled } from "@mui/system";
 import { Styles } from './styles'
 import memory from './assets/memory.png'
+import {BrowserRouter, Swich, Route} from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { getPost } from './actions/posts'
+import Navbar from './components/NavBar/Navbar'
 
 function App() {
 // const classes = styled();
@@ -25,10 +27,11 @@ dispatch(getPost())
   return (
     
       <Container maxWidth='lg'>
-        <StyledBar  position='static' color='inherit'>
+        {/* <StyledBar  position='static' color='inherit'>
           <StyledTypography  variant='h2' align='center'>Memories</StyledTypography>
           <img className={Styles.image} src={memory} alt="memories" height='100' />
-        </StyledBar>
+        </StyledBar> */}
+        <Navbar/>
         <Grow in>
           <Container>
             <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
