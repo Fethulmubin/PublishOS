@@ -20,7 +20,7 @@ const Auth = () => {
     const handleSubmit = (e) => {
 
     }
-    const handleChange = () =>{
+    const handleChange = () => {
 
     }
     const switchMode = () => {
@@ -30,6 +30,10 @@ const Auth = () => {
     }
     const googleSuccess = async (res) => {
         // console.log(res?.credential);
+      
+        // const jsonString = '{"name":"Ali", "age":25}';
+        // const obj = JSON.parse(jsonString);
+        // console.log(obj.name)
         const profileObj = res.credential ? JSON.parse(atob(res?.credential.split('.')[1])) : {};
         const Token = res?.credential;
         console.log(profileObj);
@@ -37,9 +41,9 @@ const Auth = () => {
         try {
             dispatch({ type: 'AUTH', data: { result: profileObj, token: Token } });
             navigate('/');
-            
+
         } catch (error) {
-            
+
         }
         // console.log('User Name:', name);
 
@@ -75,16 +79,16 @@ const Auth = () => {
                         {isSignup ? 'Sign Up' : 'Sign In'}
                     </Button>
                     <GoogleLogin
-                       clientid = 'goog'
-                       render ={renderProps => (
-                        <Button variant='contained' className={Styles.googleButton} color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon/>}  Variant ='contained'>
-                            Google Sign In
-                        </Button>
-                       )}
-                       onSuccess={googleSuccess}
-                       onFailure={googleFailure}
-                       cookiePolicy='single_host_origin'
-                       />
+                        clientid='goog'
+                        render={renderProps => (
+                            <Button variant='contained' className={Styles.googleButton} color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
+                                Google Sign In
+                            </Button>
+                        )}
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                        cookiePolicy='single_host_origin'
+                    />
                     <Grid container justify='flex end'>
                         <Button onClick={switchMode}>{isSignup ? 'Already have an accoutn ? Sign In' : "Don't you have an account ? Sign Up "}</Button>
                     </Grid>
