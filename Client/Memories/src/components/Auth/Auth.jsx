@@ -2,15 +2,20 @@ import React, { useState } from 'react'
 import { Container, Typography, Grid, Paper, Avatar, Button, TextField } from '@mui/material'
 import { styled } from "@mui/system";
 import { Styles } from './styles'
+import Icon from './Icon';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Input from './Input';
+import { useDispatch } from 'react-redux';
+import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
     const StyledPaper = styled(Paper)(() => (Styles.paper))
     // const isSignup = false;
-
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
     const handleSubmit = (e) => {
 
@@ -23,6 +28,25 @@ const Auth = () => {
         setShowPassword(false);
 
     }
+    const googleSuccess = async (res) => {
+        // console.log(res?.credential);
+        const profileObj = res.credential ? JSON.parse(atob(res?.credential.split('.')[1])) : {};
+        const Token = res?.credential;
+        console.log(profileObj);
+        console.log(Token)
+        try {
+            dispatch({ type: 'AUTH', data: { result: profileObj, token: Token } });
+            navigate('/');
+            
+        } catch (error) {
+            
+        }
+        // console.log('User Name:', name);
+
+    }
+    const googleFailure = (err) => {
+        console.log(err);
+    }
     return (
         <Container component='main' maxWidth='xs'>
             <StyledPaper elevation={3}>
@@ -31,7 +55,7 @@ const Auth = () => {
                 </Avatar>
                 <Typography variant='h5'>{isSignup ? 'Sign Up' : 'Sign In'}</Typography>
                 <form className={Styles.form} onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} style={{ marginBottom: '16px' }}>
                         {isSignup ? (
                             <>
                                 <Input name='firstName' label='First Name' handleChange={handleChange} autoFocus half />
@@ -46,12 +70,22 @@ const Auth = () => {
                                 <Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth />
                             </>
                         )}
-
                     </Grid>
                     <Button type='submit' fullWidth variant='contained' color='primary' className={Styles.submit}>
                         {isSignup ? 'Sign Up' : 'Sign In'}
                     </Button>
-                    <Grid container justify = 'flex end'>
+                    <GoogleLogin
+                       clientid = 'goog'
+                       render ={renderProps => (
+                        <Button variant='contained' className={Styles.googleButton} color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon/>}  Variant ='contained'>
+                            Google Sign In
+                        </Button>
+                       )}
+                       onSuccess={googleSuccess}
+                       onFailure={googleFailure}
+                       cookiePolicy='single_host_origin'
+                       />
+                    <Grid container justify='flex end'>
                         <Button onClick={switchMode}>{isSignup ? 'Already have an accoutn ? Sign In' : "Don't you have an account ? Sign Up "}</Button>
                     </Grid>
                 </form>

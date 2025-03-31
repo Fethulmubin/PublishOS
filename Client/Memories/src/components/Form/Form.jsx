@@ -130,7 +130,7 @@ function Form({currentId, setCurrentId}) {
           
           <StyledButton
             variant = "container"
-            color = "blue"
+            color = "primary"
             size = "large"
             type = "submit"
             
@@ -141,7 +141,7 @@ function Form({currentId, setCurrentId}) {
           </StyledButton>
           <Button
             variant = "container"
-            color = "red"
+            color="secondary"
             size = "small"
             onClick={clear}
             fullWidth
