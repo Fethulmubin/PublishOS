@@ -53,12 +53,6 @@ function Post({post, setCurrentId, deletePosts}) {
               {moment(post.createdAt).fromNow()}
           </StyledTypography>
         </div>
-        {/* <div className={Styles.overlay2}>
-          <Button style={{color : 'blue'}} size = 'small' onClick={()=> 
-            {setCurrentId(post._id)}}>
-              <EditIcon fontSize = 'default'/>
-          </Button>
-        </div> */}
         <div className={Styles.details}>
            <StyledTypography variant='body2' color='textSecondary'>
               {post.tags.map(tag=>`#${tag} `)}
