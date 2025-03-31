@@ -30,7 +30,7 @@ const Auth = () => {
     }
     const googleSuccess = async (res) => {
         // console.log(res?.credential);
-      
+          //JSON.pasrs fun takes string of obj to js object 
         // const jsonString = '{"name":"Ali", "age":25}';
         // const obj = JSON.parse(jsonString);
         // console.log(obj.name)
