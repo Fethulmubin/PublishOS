@@ -5,6 +5,8 @@ import { Container, AppBar, Typography, Grow, Grid } from '@mui/material'
 import Posts from '../Posts/Posts'
 import Form from '../Form/Form'
 import { getPost } from '../../actions/posts'
+import { styled } from "@mui/system";
+
 
 const Home = () => {
     const [currentId, setCurrentId] = useState(null)
