@@ -30,7 +30,7 @@ const Auth = () => {
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
     const handleSubmit = (e) => {
         e.preventDefault();
-        isSignup ? dispatch(signup()) : dispatch(signin())
+        isSignup ? dispatch(signup(formData, navigate)) : dispatch(signin(formData, navigate))
     } 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name] : e.target.value})
