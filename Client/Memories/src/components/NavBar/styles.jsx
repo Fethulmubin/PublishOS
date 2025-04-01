@@ -3,6 +3,7 @@ export const Styles = {
       borderRadius: 15,
       margin: '30px 0',
       display: 'flex',
+      padding: '10px',
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',

@@ -23,16 +23,16 @@ const Navbar = () => {
     };
 
     return (
-        <StyledBar position='static' color='inherit'>
-            <div className={Styles.brandContainer}>
-                <StyledTypography className={Styles.heading} component={Link} to='/' variant='h2' align='center'>
+        <StyledBar position='static' color='inherit' className={Styles.appBar} style={{ height: '80px', display: 'flex', justifyContent: 'space-around' }}>
+            <div className={Styles.brandContainer} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <StyledTypography className={Styles.heading} component={Link} to='/' variant='h3' align='center'>
                     Memories
                 </StyledTypography>
-                <img className={Styles.image} src={memory} alt="memories" height='100' />
+                <img className={Styles.image} src={memory} alt="memories" height='50' />
             </div>
             <StyledToolbar>
                 {user ? (
-                    <div className={Styles.profile}>
+                    <div className={Styles.profile} style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
                         <Avatar className={Styles.purple} alt={user.result.name} src={user.result.imageURL}>
                             {user.result.name.charAt(0)}
                         </Avatar>
