@@ -2,7 +2,7 @@ import React from 'react'
 import { TextField, Grid, InputAdornment, IconButton } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
-const Input = ({name, label, type, handleChange, handleShowPassword, half}) => {
+const Input = ({name, label, type, handleChange, handleShowPassword, autoComplete, value, half, autoFocus}) => {
   return (
     <Grid item xs={12} sm={half ? 6 : 12}>
       <TextField
@@ -10,10 +10,12 @@ const Input = ({name, label, type, handleChange, handleShowPassword, half}) => {
         label={label}
         variant='outlined'
         type={type}
+        value={value}
         required
         onChange={handleChange}
         fullWidth
-        autoFocus
+        autoFocus={autoFocus}
+        autoComplete={autoComplete || 'off'}
         InputProps={name === 'password' && {
           endAdornment: (
             <InputAdornment position="end">

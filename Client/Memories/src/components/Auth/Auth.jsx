@@ -8,21 +8,35 @@ import Input from './Input';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
+import {signin, signup} from '../../actions/auth'
+
+const initialState = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+}
 
 const Auth = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState(initialState)
     const [isSignup, setIsSignup] = useState(false);
     const StyledPaper = styled(Paper)(() => (Styles.paper))
     // const isSignup = false;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
     const handleSubmit = (e) => {
-
+        e.preventDefault();
+        isSignup ? dispatch(signup()) : dispatch(signin())
+    } 
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name] : e.target.value})
     }
-    const handleChange = () => {
 
-    }
+    // console.log("formData", formData)
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
         setShowPassword(false);
@@ -30,7 +44,7 @@ const Auth = () => {
     }
     const googleSuccess = async (res) => {
         // console.log(res?.credential);
-          //JSON.pasrs fun takes string of obj to js object 
+        //JSON.pasrs fun takes string of obj to js object 
         // const jsonString = '{"name":"Ali", "age":25}';
         // const obj = JSON.parse(jsonString);
         // console.log(obj.name)
@@ -62,16 +76,16 @@ const Auth = () => {
                     <Grid container spacing={2} style={{ marginBottom: '16px' }}>
                         {isSignup ? (
                             <>
-                                <Input name='firstName' label='First Name' handleChange={handleChange} autoFocus half />
-                                <Input name='lastName' label='Last Name' handleChange={handleChange} half />
-                                <Input name='email' label='Email Address' handleChange={handleChange} type='email' fullWidth />
-                                <Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth />
-                                <Input name='confirmPassword' label='Repeat Password' handleChange={handleChange} type='password' fullWidth />
+                                <Input name='firstName' label='First Name' value={formData.firstName} handleChange={handleChange} autoFocus={true} half autoComplete="given-name" />
+                                <Input name='lastName' label='Last Name' value={formData.lastName}  handleChange={handleChange} half autoComplete="family-name"  />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email' fullWidth autoComplete="email" />
+                                <Input name='password' label='Password'  value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password"/>
+                                <Input name='confirmPassword' label='Repeat Password'  value={formData.confirmPassword} handleChange={handleChange} type='password' fullWidth autoComplete="new-password" />
                             </>
                         ) : (
                             <>
-                                <Input name='email' label='Email Address' handleChange={handleChange} type='email' autoFocus fullWidth />
-                                <Input name='password' label='Password' handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email' autoFocus={true} fullWidth autoComplete="email"  />
+                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
                             </>
                         )}
                     </Grid>
@@ -79,7 +93,6 @@ const Auth = () => {
                         {isSignup ? 'Sign Up' : 'Sign In'}
                     </Button>
                     <GoogleLogin
-                        clientid='goog'
                         render={renderProps => (
                             <Button variant='contained' className={Styles.googleButton} color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
                                 Google Sign In

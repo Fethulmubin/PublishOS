@@ -12,20 +12,17 @@ import { SkeletonTheme } from 'react-loading-skeleton'
 function App() {
   // const classes = styled();
   return (
-    <SkeletonTheme baseColor="#e0e0e0" highlightColor="#f5f5f5">
+    <SkeletonTheme baseColor="rgba(224, 224, 224, 0.5)" highlightColor="rgba(251, 232, 232, 0.5)">
       <BrowserRouter>
         <Container maxWidth='lg'>
           <Navbar />
-          {/* <Switch> */}
           <Routes>
             <Route path='/' exact Component={Home} />
             <Route path='/auth' exact Component={Auth} />
           </Routes>
-          {/* </Switch> */}
         </Container>
       </BrowserRouter>
     </SkeletonTheme>
-
   )
 }
 
