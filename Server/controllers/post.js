@@ -59,12 +59,22 @@ export const deletePost = async (req, res)=>{
 }
 export const likePost = async(req, res)=>{
     const {id : _id} = req.params;
+    if(!req.userId) return res.status(400).json({success: false, message: 'Unauthenticated user '})
+
     if(!mongoose.Types.ObjectId.isValid(_id)){
         return res.status(404).send("no post with this id"); 
     }
     try {
         const post = await postMessage.findById(_id)
-        const updatedLike = await postMessage.findByIdAndUpdate(_id, {likeCount : post.likeCount+ 1})
+        const index = post.likes.findIndex(id => id === String(req.userId));
+
+        if(index === -1){
+            post.likes.push(req.userId);
+        } else{
+            post.likes = post.likes.filter((id) => id !== String(req.userId));  
+        }
+
+        const updatedLike = await postMessage.findByIdAndUpdate(_id, post , {new: true})
         res.json(updatedLike)
     } catch (error) {
          res.status(500).send("Something went wrong, please check your internet");
