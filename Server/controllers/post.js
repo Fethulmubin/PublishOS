@@ -69,13 +69,15 @@ export const likePost = async(req, res)=>{
         const index = post.likes.findIndex(id => id === String(req.userId));
 
         if(index === -1){
+            //liking
             post.likes.push(req.userId);
         } else{
-            post.likes = post.likes.filter((id) => id !== String(req.userId));  
+            //disliking
+            post.likes = post.likes.filter((id) => id !== String(req.userId))
         }
 
         const updatedLike = await postMessage.findByIdAndUpdate(_id, post , {new: true})
-        res.json(updatedLike)
+        res.status(200).json(updatedLike)
     } catch (error) {
          res.status(500).send("Something went wrong, please check your internet");
     }
