@@ -39,6 +39,7 @@ const Auth = () => {
     // console.log("formData", formData)
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
+        
         setShowPassword(false);
 
     }
@@ -84,8 +85,8 @@ const Auth = () => {
                             </>
                         ) : (
                             <>
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email' autoFocus={true} fullWidth autoComplete="email"  />
-                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} autoFocus={true}  type='email' fullWidth autoComplete="email"  />
+                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange}  type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
                             </>
                         )}
                     </Grid>
