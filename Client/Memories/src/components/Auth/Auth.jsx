@@ -8,7 +8,7 @@ import Input from './Input';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import {signin, signup} from '../../actions/auth'
+import { signin, signup } from '../../actions/auth'
 
 const initialState = {
     firstName: "",
@@ -22,6 +22,7 @@ const Auth = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState(initialState)
     const [isSignup, setIsSignup] = useState(false);
+    const [focusedField, setFocusedField] = useState(null);
     const StyledPaper = styled(Paper)(() => (Styles.paper))
     // const isSignup = false;
     const dispatch = useDispatch();
@@ -31,16 +32,19 @@ const Auth = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         isSignup ? dispatch(signup(formData, navigate)) : dispatch(signin(formData, navigate))
-    } 
+    }
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name] : e.target.value})
+        const {name, value} = e.target;
+        setFormData({ ...formData, [name]: value })
+        setFocusedField(name)
     }
 
-    // console.log("formData", formData)
+    console.log("formData", formData)
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
-        
         setShowPassword(false);
+        setFormData(initialState);
+        setFocusedField(null)
 
     }
     const googleSuccess = async (res) => {
@@ -77,16 +81,17 @@ const Auth = () => {
                     <Grid container spacing={2} style={{ marginBottom: '16px' }}>
                         {isSignup ? (
                             <>
-                                <Input name='firstName' label='First Name' value={formData.firstName} handleChange={handleChange} autoFocus={true} half autoComplete="given-name" />
-                                <Input name='lastName' label='Last Name' value={formData.lastName}  handleChange={handleChange} half autoComplete="family-name"  />
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email' fullWidth autoComplete="email" />
-                                <Input name='password' label='Password'  value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password"/>
-                                <Input name='confirmPassword' label='Repeat Password'  value={formData.confirmPassword} handleChange={handleChange} type='password' fullWidth autoComplete="new-password" />
+                                <Input name='firstName' label='First Name' type='text' value={formData.firstName} handleChange={handleChange} autoFocus={focusedField === 'firstName' || focusedField === null} half autoComplete="given-name" />
+                                <Input name='lastName' label='Last Name'  type='text' value={formData.lastName} handleChange={handleChange}  autoFocus={focusedField === 'lastName'} half autoComplete="family-name" />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email'  autoFocus={focusedField === 'email'} fullWidth autoComplete="email" />
+                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'}  autoFocus={focusedField === 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
+                                <Input name='confirmPassword' label='Repeat Password' value={formData.confirmPassword} handleChange={handleChange} type='password'  autoFocus={focusedField === 'confirmPassword'} fullWidth autoComplete="new-password" />
                             </>
+
                         ) : (
                             <>
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} autoFocus={true}  type='email' fullWidth autoComplete="email"  />
-                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange}  type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} autoFocus={focusedField === 'email' || focusedField === null} type='email' fullWidth autoComplete="email" />
+                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange}  autoFocus={focusedField === 'password'} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
                             </>
                         )}
                     </Grid>
@@ -104,7 +109,7 @@ const Auth = () => {
                         cookiePolicy='single_host_origin'
                     />
                     <Grid container justify='flex end'>
-                        <Button onClick={switchMode}>{isSignup ? 'Already have an accoutn ? Sign In' : "Don't you have an account ? Sign Up "}</Button>
+                        <Button onClick={switchMode}>{isSignup ? 'Already have an account ? Sign In' : "Don't you have an account ? Sign Up "}</Button>
                     </Grid>
                 </form>
             </StyledPaper>
