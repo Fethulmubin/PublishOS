@@ -10,6 +10,7 @@ import { styled } from "@mui/system";
 
 const Home = () => {
     const [currentId, setCurrentId] = useState(null)
+    const [isSignup, setIsSignup] = useState(false);
     const StyledBar = styled(AppBar)(() => (Styles.appBar))
     const StyledTypography = styled(Typography)(() => (Styles.heading))
 
@@ -18,6 +19,16 @@ const Home = () => {
     useEffect(() => {
         dispatch(getPost())
     }, [dispatch])
+
+    useEffect(()=>{
+        const token = localStorage.getItem('profile')
+        if(token){
+           setIsSignup(true)
+        }
+        else{
+            setIsSignup(false)
+        }
+    },[])
     return (
         <Grow in>
             <Container>
@@ -26,7 +37,9 @@ const Home = () => {
                         <Posts setCurrentId={setCurrentId} />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                        <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
+                        {isSignup ? <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
+                        :<></>
+                        }
                     </Grid>
                 </Grid>
             </Container>

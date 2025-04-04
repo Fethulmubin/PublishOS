@@ -77,21 +77,21 @@ const Auth = () => {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography variant='h5'>{isSignup ? 'Sign Up' : 'Sign In'}</Typography>
-                <form className={Styles.form} onSubmit={handleSubmit}>
+                <form autoComplete="off" className={Styles.form} onSubmit={handleSubmit}>
                     <Grid container spacing={2} style={{ marginBottom: '16px' }}>
                         {isSignup ? (
                             <>
-                                <Input name='firstName' label='First Name' type='text' value={formData.firstName} handleChange={handleChange} autoFocus={focusedField === 'firstName' || focusedField === null} half autoComplete="given-name" />
-                                <Input name='lastName' label='Last Name'  type='text' value={formData.lastName} handleChange={handleChange}  autoFocus={focusedField === 'lastName'} half autoComplete="family-name" />
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email'  autoFocus={focusedField === 'email'} fullWidth autoComplete="email" />
-                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'}  autoFocus={focusedField === 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
-                                <Input name='confirmPassword' label='Repeat Password' value={formData.confirmPassword} handleChange={handleChange} type='password'  autoFocus={focusedField === 'confirmPassword'} fullWidth autoComplete="new-password" />
+                                <Input name='firstName' label='First Name' type='text' value={formData.firstName} handleChange={handleChange} autoFocus={focusedField === 'firstName' || focusedField === null} half  />
+                                <Input name='lastName' label='Last Name'  type='text' value={formData.lastName} handleChange={handleChange}  autoFocus={focusedField === 'lastName'} half />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email'  autoFocus={focusedField === 'email'} fullWidth />
+                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'}  autoFocus={focusedField === 'password'} handleShowPassword={handleShowPassword} fullWidth  />
+                                <Input name='confirmPassword' label='Repeat Password' value={formData.confirmPassword} handleChange={handleChange} type='password'  autoFocus={focusedField === 'confirmPassword'} fullWidth  />
                             </>
 
                         ) : (
                             <>
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} autoFocus={focusedField === 'email' || focusedField === null} type='email' fullWidth autoComplete="email" />
-                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange}  autoFocus={focusedField === 'password'} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth autoComplete="new-password" />
+                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} autoFocus={focusedField === 'email' || focusedField === null} type='email' fullWidth />
+                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange}  autoFocus={focusedField === 'password'} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth  />
                             </>
                         )}
                     </Grid>
