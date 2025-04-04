@@ -10,6 +10,7 @@ import { createPost, updatePost } from "../../actions/posts";
   const StyledPaper = styled(Paper)(() => Styles.paper);
   const StyledButton = styled(Button)(() => Styles.buttonSubmit);
   const StyledTextField = styled(TextField)(() => Styles.textField);
+  // const user = JSON.parse(localStorage.getItem('profile'));
 
 function Form({currentId, setCurrentId}) {
   const post = useSelector((state)=> currentId? state.posts.find((p)=> p._id === currentId ):null)
@@ -21,6 +22,7 @@ function Form({currentId, setCurrentId}) {
     selectedFile: "",
   });
   const [shouldRerender, setShouldRerender] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
    useEffect(()=>{
     if(post) setPostData(post)
       // dispatch(getPost())
@@ -59,10 +61,18 @@ function Form({currentId, setCurrentId}) {
       selectedFile: "",})
       setCurrentId(null);
   };
-
+ useEffect(()=>{
+        const token = localStorage.getItem('profile')
+        if(token){
+           setIsSignup(true)
+        }
+        else{
+            setIsSignup(false)
+        }
+    },[isSignup])
   return (
     <>
-      <StyledPaper>
+    {isSignup ?   <StyledPaper>
         <form
           autoComplete="off"
           onSubmit={handleSubmit}
@@ -149,7 +159,12 @@ function Form({currentId, setCurrentId}) {
             Clear
           </Button>
         </form>
-      </StyledPaper>
+      </StyledPaper> : <Paper className={Styles.paper}>
+        <Typography variant="h6" align="center">
+          Please Sign In to create your own memories and like other's memories.
+        </Typography>
+      </Paper>}
+     
     </>
   );
 }

@@ -20,15 +20,15 @@ const Home = () => {
         dispatch(getPost())
     }, [dispatch])
 
-    useEffect(()=>{
-        const token = localStorage.getItem('profile')
-        if(token){
-           setIsSignup(true)
-        }
-        else{
-            setIsSignup(false)
-        }
-    },[])
+    // useEffect(()=>{
+    //     const token = localStorage.getItem('profile')
+    //     if(token){
+    //        setIsSignup(true)
+    //     }
+    //     else{
+    //         setIsSignup(false)
+    //     }
+    // },[])
     return (
         <Grow in>
             <Container>
@@ -37,9 +37,7 @@ const Home = () => {
                         <Posts setCurrentId={setCurrentId} />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                        {isSignup ? <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
-                        :<></>
-                        }
+                        <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
                     </Grid>
                 </Grid>
             </Container>
