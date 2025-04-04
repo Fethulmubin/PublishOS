@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+// import { useSelector } from "react-redux";
 import { styled } from "@mui/system";
 import { Styles } from "./styles";
 import { TextField, Button, Typography, Paper } from "@mui/material";
@@ -10,10 +11,11 @@ import { createPost, updatePost } from "../../actions/posts";
   const StyledPaper = styled(Paper)(() => Styles.paper);
   const StyledButton = styled(Button)(() => Styles.buttonSubmit);
   const StyledTextField = styled(TextField)(() => Styles.textField);
-  // const user = JSON.parse(localStorage.getItem('profile'));
+  
 
 function Form({currentId, setCurrentId}) {
   const post = useSelector((state)=> currentId? state.posts.find((p)=> p._id === currentId ):null)
+  const user = useSelector((state) => state.auth.authData);
   const [postData, setPostData] = useState({
     creator: "",
     title: "",
@@ -61,18 +63,18 @@ function Form({currentId, setCurrentId}) {
       selectedFile: "",})
       setCurrentId(null);
   };
- useEffect(()=>{
-        const token = localStorage.getItem('profile')
-        if(token){
-           setIsSignup(true)
-        }
-        else{
-            setIsSignup(false)
-        }
-    },[isSignup])
+//  useEffect(()=>{
+//         const token = localStorage.getItem('profile')
+//         if(token){
+//            setIsSignup(true)
+//         }
+//         else{
+//             setIsSignup(false)
+//         }
+//     },[isSignup])
   return (
     <>
-    {isSignup ?   <StyledPaper>
+    {user ?   <StyledPaper>
         <form
           autoComplete="off"
           onSubmit={handleSubmit}
