@@ -13,6 +13,7 @@ import  {deletePost, likePost}  from '../../../actions/posts';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CommentBar from '../../CommentBar/CommentBar';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 
 
@@ -20,6 +21,10 @@ function Post({post, setCurrentId, currentId}) {
 
   const [Render, setRender] = useState(false)
   const [comment, setComment] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams();
+  // console.log(searchParams.get('id'))
+  // const {id} = useParams()
+
   const dispatch = useDispatch();
   const StyledCard = styled(Card)(()=> Styles.card)
   const StyledTypography= styled(Typography)(()=> Styles.title)
@@ -36,10 +41,10 @@ function Post({post, setCurrentId, currentId}) {
   const handleSubmit = ()=>{
     dispatch(likePost(post._id))
     setRender(!Render)
-    // console.log(Render)
   }
   return (
-   <StyledCard>
+    <>
+   <StyledCard style={{ marginBottom: '10px' }}>
       <StyledCardMedia image= {post.selectedFile}
       title={post.title}/>
         <div className={Styles.overlay}>
@@ -81,14 +86,16 @@ function Post({post, setCurrentId, currentId}) {
             <div className={Styles.overlay2}>
           <Button style={{color : 'blue'}} size = 'small' onClick={()=> 
             {setCurrentId(post._id)
-              setComment(!comment)
+             searchParams.get('id') ? setSearchParams({}) : setSearchParams({id: post._id})
             }}>
               <CommentIcon style={{color : '#74a1e8', fontSize: '20px'}} />
           </Button>
            </div>
         </StyledCardActions>
-        {comment && <CommentBar/>}
    </StyledCard>
+   
+  
+   </>
   )
 }
 
