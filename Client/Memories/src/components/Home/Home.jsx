@@ -6,6 +6,7 @@ import Posts from '../Posts/Posts'
 import Form from '../Form/Form'
 import { getPost } from '../../actions/posts'
 import { styled } from "@mui/system";
+import CommentBar from '../CommentBar/CommentBar'
 
 
 const Home = () => {
@@ -39,6 +40,7 @@ const Home = () => {
                     <Grid item xs={12} sm={4}>
                         <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
                     </Grid>
+                    <CommentBar/>
                 </Grid>
             </Container>
         </Grow>
