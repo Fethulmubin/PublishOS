@@ -73,20 +73,22 @@ function Post({post, setCurrentId, currentId}) {
               handleSubmit()
             }}>
               <ThumbUpAltIcon style={{color : '#74a1e8'}} fontSize= 'small'/>
-              {`Like `}
               {post.likeCount}
             </Button>
             <Button size='small' style={{color : '#e36c27'}} onClick={()=> 
               {dispatch(deletePost(post._id))
               }}>
               <DeleteIcon style={{color : '#e36c27'}} fontSize= 'small'/>
-              Delete
             </Button>
             {/* {deletePosts && <ToastContainer />} */}
-            <div className={Styles.overlay2}>
+            <div className={Styles.overlay2} style={{display: 'flex', gap: '5px'}}>
           <Button style={{color : 'blue'}} size = 'small' onClick={()=> 
             {setCurrentId(post._id)
-             searchParams.get('id') ? setSearchParams({}) : setSearchParams({id: post._id})
+            }}>
+              <EditIcon style={{color : '#74a1e8', fontSize: '20px'}} />
+          </Button>
+          <Button style={{color : 'blue'}} size = 'small' onClick={()=> 
+            {searchParams.get('id') ? setSearchParams({}) : setSearchParams({id: post._id})
             }}>
               <CommentIcon style={{color : '#74a1e8', fontSize: '20px'}} />
           </Button>

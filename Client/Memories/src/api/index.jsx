@@ -5,6 +5,7 @@ import React from 'react'
 
 
 const url = 'http://localhost:5555/'
+
 const API = axios.create({ baseURL: url });
 export const fetchPosts = ()=> API.get('posts');
 export const createPosts = (newPost)=> API.post('posts', newPost );
