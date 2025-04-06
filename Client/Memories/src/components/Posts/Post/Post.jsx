@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CommentIcon from '@mui/icons-material/Comment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {styled} from '@mui/system'
@@ -12,20 +12,20 @@ import { useDispatch } from 'react-redux';
 import  {deletePost, likePost}  from '../../../actions/posts';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CommentBar from '../../CommentBar/CommentBar';
 
 
 
-function Post({post, setCurrentId, deletePosts}) {
-  // const StyledBar =  styled(AppBar)(()=> (Styles.appBar))
-  // const notifyUpdate = () => toast("your post updated successfully");
-  // const notifyDelete = () => toast("your post deleted successfully");
+function Post({post, setCurrentId, currentId}) {
+
   const [Render, setRender] = useState(false)
+  const [comment, setComment] = useState(false)
   const dispatch = useDispatch();
   const StyledCard = styled(Card)(()=> Styles.card)
   const StyledTypography= styled(Typography)(()=> Styles.title)
   const StyledCardActions= styled(CardActions)(()=> Styles.cardActions)
   const StyledCardMedia = styled(CardMedia)(()=> Styles.media)
-  // const styledButton = Styled(Button)(()=> Styles.media)
+
   useEffect(() => {
     if (Render) {
       // Any additional actions to perform on re-render
@@ -80,11 +80,14 @@ function Post({post, setCurrentId, deletePosts}) {
             {/* {deletePosts && <ToastContainer />} */}
             <div className={Styles.overlay2}>
           <Button style={{color : 'blue'}} size = 'small' onClick={()=> 
-            {setCurrentId(post._id)}}>
-              <MoreHorizIcon style={{color : '#74a1e8'}} fontSize = 'default'/>
+            {setCurrentId(post._id)
+              setComment(!comment)
+            }}>
+              <CommentIcon style={{color : '#74a1e8', fontSize: '20px'}} />
           </Button>
            </div>
         </StyledCardActions>
+        {comment && <CommentBar/>}
    </StyledCard>
   )
 }
