@@ -10,6 +10,11 @@ const postSchema = mongoose.Schema({
         type : [String],
         default : []
     },
+    comments: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Comment',
+        default: []
+    },
     createdAt:{
         type : Date,
         default : new Date()

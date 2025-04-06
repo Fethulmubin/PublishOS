@@ -1,15 +1,24 @@
 import mongoose from "mongoose";
 
 const commentSchema = mongoose.Schema({
-    postId: String,
+    postId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'postMessage',
+        required: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', 
+        required: true
+    },
     name: String,
     comment: String,
     createdAt: {
         type: Date,
         default: new Date()
     }
-})
+});
 
-const commentModel = mongoose.model('commentMessage', commentSchema);
+const Comment = mongoose.model('Comment', commentSchema);
 
-export default commentModel;
+export default Comment;
