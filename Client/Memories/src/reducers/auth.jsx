@@ -1,11 +1,12 @@
 const authReducer = (state = { authData: null }, action) => {
     switch (action.type) {
         case 'AUTH':
-            const { result, token } = action?.data;
+            // const { result, token } = action?.data;
             // Store user data (optional)
-            localStorage.setItem('profile', JSON.stringify(result));
+            // localStorage.setItem('profile', JSON.stringify(result));
+            localStorage.setItem('profile', JSON.stringify({ ...action?.data }));
             // Store token (required for auth)
-            localStorage.setItem('token', token);
+            // localStorage.setItem('token', token);
             return { ...state, authData: action?.data };
         case 'LOGOUT':
             localStorage.clear();

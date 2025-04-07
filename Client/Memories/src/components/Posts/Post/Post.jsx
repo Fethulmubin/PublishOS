@@ -24,7 +24,7 @@ function Post({ post, setCurrentId, currentId }) {
   // const [Render, setRender] = useState(false)
   // const user = useSelector((state) => state?.auth.authData);
   const user = useSelector((state) => state?.auth.authData);
-  console.log(user)
+  // console.log(user)
   const [searchParams, setSearchParams] = useSearchParams();
   
 
@@ -34,16 +34,8 @@ function Post({ post, setCurrentId, currentId }) {
   const StyledCardActions = styled(CardActions)(() => Styles.cardActions)
   const StyledCardMedia = styled(CardMedia)(() => Styles.media)
 
-  // useEffect(() => {
-  //   if (Render) {
-  //     // Any additional actions to perform on re-render
-  //     setRender(false); // Reset the state to avoid infinite loop
-  //   }
-  // }, [Render]);
-
   const handleLike = () => {
     dispatch(likePost(post?._id))
-    // setRender(!Render)
   }
   return (
     <>
@@ -73,7 +65,7 @@ function Post({ post, setCurrentId, currentId }) {
         </CardContent>
         <StyledCardActions>
           <Button size='small' style={{ color: '#74a1e8' }} onClick={handleLike}>
-            {user && post.likes.includes(user?._id)
+            {user && post.likes.includes(user?.result?._id)
               ? <ThumbUpAltIcon style={{ color: '#74a1e8' }} fontSize='small' />
               : <ThumbUpOffAltIcon style={{ color: '#74a1e8' }} fontSize='small' />
             }
