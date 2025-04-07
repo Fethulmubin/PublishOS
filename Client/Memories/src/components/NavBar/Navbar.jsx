@@ -6,13 +6,15 @@ import memory from '../../assets/memory.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+// import jwt_decode from 'jwt-decode';
 
 const Navbar = () => {
 
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state) => state.auth.authData);
+    const user = useSelector((state) => state?.auth.authData);
+    console.log(user)
     const StyledBar = styled(AppBar)(() => (Styles.appBar));
     const StyledTypography = styled(Typography)(() => (Styles.heading));
     const StyledToolbar = styled(Toolbar)(() => (Styles.toolbar));
@@ -21,6 +23,7 @@ const Navbar = () => {
         dispatch({ type: 'LOGOUT' });
         navigate('/');
     };
+
 
     return (
         <StyledBar position='static' color='inherit' className={Styles.appBar} style={{ height: '80px', display: 'flex', justifyContent: 'space-around' }}>
@@ -33,11 +36,11 @@ const Navbar = () => {
             <StyledToolbar>
                 {user ? (
                     <div className={Styles.profile} style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
-                        <Avatar className={Styles.purple} alt={user.result.name} src={user.result.imageURL}>
-                            {user.result.name.charAt(0)}
+                        <Avatar className={Styles.purple} alt={user?.result?.name} src={user?.result?.imageURL}>
+                            {user?.result?.name?.charAt(0)}
                         </Avatar>
                         <StyledTypography className={Styles.userName} variant='h6'>
-                            {user.result.name}
+                            {user?.result?.name}
                         </StyledTypography>
                         <Button onClick={logout} variant='contained' className={Styles.Logout} color='secondary'>
                             Logout

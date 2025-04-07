@@ -7,8 +7,14 @@ import {createStore, applyMiddleware, compose} from 'redux'
 import {thunk} from 'redux-thunk'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import reducers from './reducers'
+import {persistedState} from './reducers'
 import './index.css'
-const store = createStore(reducers, compose(applyMiddleware(thunk)))
+// const store = createStore(reducers, compose(applyMiddleware(thunk)) )
+const store = createStore(
+  reducers,
+  persistedState,
+  compose(applyMiddleware(thunk))
+);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
