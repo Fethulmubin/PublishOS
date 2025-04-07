@@ -19,7 +19,7 @@ export const createPost = async (req, res)=>{
     // const newPost = new postMessage(data);
     try {
         // await newPost.save();
-        const newPost = await postMessage.create({title, message,creator, tags , selectedFile} )
+        const newPost = await postMessage.create({title, message, creator, tags , selectedFile} )
         res.status(201).json(newPost);
     } catch (error) {
         res.status(404).json({msg : error.message})
@@ -57,28 +57,32 @@ export const deletePost = async (req, res)=>{
             res.status(500).send("Something went wrong, please check your internet");
         }
 }
-export const likePost = async(req, res)=>{
-    const {id : _id} = req.params;
-    if(!req.userId) return res.status(400).json({success: false, message: 'Unauthenticated user '})
-
-    if(!mongoose.Types.ObjectId.isValid(_id)){
-        return res.status(404).send("no post with this id"); 
+export const likePost = async (req, res) => {
+    const { id: _id } = req.params;
+    const id = req.userId;
+    if (!id) {
+        return res.status(400).json({ success: false, message: 'Unauthenticated user' });
     }
-    try {
-        const post = await postMessage.findById(_id)
-        const index = post.likes.findIndex(id => id === String(req.userId));
 
-        if(index === -1){
-            //liking
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(404).send("No post with this ID");
+    }
+
+    try {
+        const post = await postMessage.findById(_id);
+        const index = post.likes.findIndex((id) => id === String(req.userId));
+
+        if (index === -1) {
             post.likes.push(req.userId);
-        } else{
-            //disliking
-            post.likes = post.likes.filter((id) => id !== String(req.userId))
+        } else {
+            post.likes = post.likes.filter((id) => id !== String(req.userId));
         }
 
-        const updatedLike = await postMessage.findByIdAndUpdate(_id, post , {new: true})
-        res.status(200).json(updatedLike)
+        const updatedPost = await postMessage.findByIdAndUpdate(_id, { likes: post.likes }, { new: true });
+
+        res.status(200).json(updatedPost);
     } catch (error) {
-         res.status(500).send("Something went wrong, please check your internet");
+        console.error(error);
+        res.status(500).send("Something went wrong, please check your internet");
     }
-}
+};
