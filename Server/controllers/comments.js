@@ -28,6 +28,7 @@ export const addComment = async (req, res) => {
     const {postId} = req.params;
     const comment = req.body.comment;
     const id = req.userId;
+    // console.log(id)
 
     const user = await userModel.findById(id);
     if (!user) {
@@ -48,7 +49,8 @@ export const addComment = async (req, res) => {
         );
         res.status(200).json({success: true , message:"Comment added successfully", comment: savedComment});
     } catch (error) {
-        res.status(500).json({success: false , message:"something went wrong"})
+
+        res.status(500).json({success: false , message:"something went wrong", error: error.message});
     }
    
 
