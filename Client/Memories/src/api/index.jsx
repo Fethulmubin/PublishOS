@@ -38,15 +38,19 @@ API.interceptors.response.use(
   }
 );
 
-export const fetchPosts = ()=> API.get('posts');
+//posts
+export const fetchPosts = ()=> axios.get(`${url}posts`);
 export const createPosts = (newPost)=> API.post('posts', newPost );
 export const updatePosts = (id, updatedPost)=> API.patch(`posts/${id}`, updatedPost );
 export const deletePosts = (id)=> API.delete(`posts/${id}` );
 export const likePosts = (id)=> API.patch(`posts/${id}/like`);
 
 //authentication
-export const signIn = (formData) => API.post('users/signin', formData);
-export const signUp = (formData) => API.post('users/signup', formData);
+export const signIn = (formData) => axios.post(`${url}users/signin`, formData);
+export const signUp = (formData) => axios.post(`${url}users/signup`, formData);
+
+//comments
+export const addComments = (id, comment) => API.post(`comments/addComment/${id}`, {comment}); // if ypu use req.body.comment 
 
 function index() {
   return (

@@ -9,6 +9,7 @@ import { styled } from "@mui/system";
 import { useSearchParams } from 'react-router-dom'
 import CommentBar from '../CommentBar/CommentBar'
 
+
 const Home = () => {
     const [currentId, setCurrentId] = useState(null)
     const [isSignup, setIsSignup] = useState(false);

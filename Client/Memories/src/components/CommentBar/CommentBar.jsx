@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import "./commentBar.css";
+import {addcomment} from '../../actions/comments'
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function CommentBar() {
-  const [comments, setComments] = useState([
-    { id: 1, name: "Ahmed", avatar: "🧑🏽‍💻", comment: "This is awesome!" },
-    { id: 2, name: "Sara", avatar: "👩🏼‍🎨", comment: "Nice post!" },
-    { id: 3, name: "Ali", avatar: "👨🏻‍🔬", comment: "Interesting point." }
-  ]);
+  const [comment, setComment] = useState('');
 
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
+  const dispatch = useDispatch()
+  const [searchParams] = useSearchParams();
+  // const navigate = useNavigate()
+const commen = useSelector((state) => state.comment)
+
+  console.log(commen)
 
   const handleAddComment = () => {
-    if (input.trim()) {
-      setComments([
-        ...comments,
-        {
-          id: comments.length + 1,
-          name: "You",
-          avatar: "🧍🏽‍♂️",
-          comment: input
-        }
-      ]);
-      setInput("");
+    if (comment.trim()) {
+      dispatch(addcomment(searchParams.get('id'), comment));
+      setComment(""); // clear field
+    } else {
+      console.log("Input was empty, not submitting");
     }
   };
+  // console.log(input);
 
   return (
     <div className="comment-wrapper">
@@ -31,8 +31,8 @@ export default function CommentBar() {
         type="text"
         placeholder="Write a comment..."
         className="comment-input"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
       />
       <div className="button-row">
         <button className="submit-btn" onClick={handleAddComment}>
@@ -40,7 +40,7 @@ export default function CommentBar() {
         </button>
       </div>
 
-      <div className="comment-feed">
+      {/* <div className="comment-feed">
         {comments.map((c) => (
           <div className="comment-item" key={c.id}>
             <div className="avatar">{c.avatar}</div>
@@ -50,7 +50,7 @@ export default function CommentBar() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
