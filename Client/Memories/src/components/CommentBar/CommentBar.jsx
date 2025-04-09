@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./commentBar.css";
-import {addcomment, getcomment} from '../../actions/comments'
+import { addcomment, getcomment } from '../../actions/comments'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -11,7 +11,7 @@ export default function CommentBar() {
 
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
-const comments = useSelector((state) => state.comment)
+  const comments = useSelector((state) => state.comment)
 
   console.log(comments)
 
@@ -23,14 +23,17 @@ const comments = useSelector((state) => state.comment)
       console.log("Input was empty, not submitting");
     }
   };
-  const fetchComments = () =>{
+  const fetchComments = () => {
     dispatch(getcomment(searchParams.get('id')))
     // console.log(comments.comments)
   }
-  
-  fetchComments()
+
+  const clearComments = () => ({
+    type: "CLEAR_COMMENTS"
+  });
+
   const fetchedComments = comments.comments
-  console.log(fetchedComments);
+  // console.log(fetchedComments);
 
   const [bgColor, setBgColor] = useState('');
 
@@ -44,6 +47,13 @@ const comments = useSelector((state) => state.comment)
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     setBgColor(randomColor);
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('id')) {
+      dispatch(clearComments());
+      fetchComments();
+    }
+  }, [searchParams.get('id'), dispatch]);
 
   return (
     <div className="comment-wrapper">
