@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./commentBar.css";
-import {addcomment} from '../../actions/comments'
+import {addcomment, getcomment} from '../../actions/comments'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -11,9 +11,9 @@ export default function CommentBar() {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   // const navigate = useNavigate()
-const commen = useSelector((state) => state.comment)
+const comments = useSelector((state) => state.comment)
 
-  console.log(commen)
+  console.log(comments)
 
   const handleAddComment = () => {
     if (comment.trim()) {
@@ -23,7 +23,14 @@ const commen = useSelector((state) => state.comment)
       console.log("Input was empty, not submitting");
     }
   };
-  // console.log(input);
+  const fetchComments = () =>{
+    dispatch(getcomment(searchParams.get('id')))
+    // console.log(comments.comments)
+  }
+  
+  fetchComments()
+  const fetchedComments = comments.comments
+  console.log(fetchedComments);
 
   return (
     <div className="comment-wrapper">
@@ -40,17 +47,19 @@ const commen = useSelector((state) => state.comment)
         </button>
       </div>
 
-      {/* <div className="comment-feed">
-        {comments.map((c) => (
-          <div className="comment-item" key={c.id}>
-            <div className="avatar">{c.avatar}</div>
+      <div className="comment-feed">
+        {fetchedComments?.map((item, index) => (
+          <div className="comment-item" key={index}>
+            <div className="avatar" style={{'--avatar-color': `hsl(${Math.random() * 360}, 70%, 60%)`}}>
+              {item?.userId?.name.charAt(0).toUpperCase()}
+            </div>
             <div className="comment-content">
-              <div className="comment-name">{c.name}</div>
-              <div className="comment-text">{c.comment}</div>
+              <div className="comment-name">{item?.userId?.name}</div>
+              <div className="comment-text">{item?.comment}</div>
             </div>
           </div>
         ))}
-      </div> */}
+      </div>
     </div>
   );
 }

@@ -51,6 +51,7 @@ export const signUp = (formData) => axios.post(`${url}users/signup`, formData);
 
 //comments
 export const addComments = (id, comment) => API.post(`comments/addComment/${id}`, {comment}); // if ypu use req.body.comment 
+export const getComments = (id) => API.get(`comments/getComments/${id}`); 
 
 function index() {
   return (
