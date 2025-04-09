@@ -25,14 +25,13 @@ export default function CommentBar() {
   };
   const fetchComments = () => {
     dispatch(getcomment(searchParams.get('id')))
-    // console.log(comments.comments)
   }
 
   const clearComments = () => ({
     type: "CLEAR_COMMENTS"
   });
 
-  const fetchedComments = comments.comments
+  const fetchedComments = comments?.comments || []
   // console.log(fetchedComments);
 
   const [bgColor, setBgColor] = useState('');
@@ -53,7 +52,7 @@ export default function CommentBar() {
       dispatch(clearComments());
       fetchComments();
     }
-  }, [searchParams.get('id'), dispatch]);
+  }, [searchParams.get('id'), dispatch, comment]);
 
   return (
     <div className="comment-wrapper">

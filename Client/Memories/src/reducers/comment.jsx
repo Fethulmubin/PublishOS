@@ -11,4 +11,7 @@ export default (comments = [], action) => {
         return comments;
     }
   };
+
+  //loading 
+  //responsiveness
   
