@@ -6,6 +6,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CircularProgress from '@mui/material/CircularProgress';
 import CommentLoad from "../LoadingSkeleton/CommentLoad";
+import moment from "moment";
 
 
 export default function CommentBar() {
@@ -98,7 +99,7 @@ export default function CommentBar() {
                     {item?.comment} 
                   </div>
                   <span className="comment-date">
-                      {new Date(item?.createdAt).toLocaleDateString()} {new Date(item?.createdAt).toLocaleTimeString()}
+                      {moment(item?.createdAt).fromNow()}
                     </span>
                 </div>
               </div>
