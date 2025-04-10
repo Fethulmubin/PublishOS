@@ -4,27 +4,32 @@ import { addcomment, getcomment } from '../../actions/comments'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 export default function CommentBar() {
   const [comment, setComment] = useState('');
-
+  const [loading, setLoading] = useState(false)
 
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const comments = useSelector((state) => state.comment)
 
-  console.log(comments)
 
   const handleAddComment = () => {
     if (comment.trim()) {
+      // setLoading(true);
       dispatch(addcomment(searchParams.get('id'), comment));
       setComment(""); // clear field
+      // setLoading(false);
     } else {
       console.log("Input was empty, not submitting");
     }
   };
   const fetchComments = () => {
+    // setLoading(true);
     dispatch(getcomment(searchParams.get('id')))
+    // setLoading(false);
   }
 
   const clearComments = () => ({
@@ -49,10 +54,12 @@ export default function CommentBar() {
 
   useEffect(() => {
     if (searchParams.get('id')) {
+      // setLoading(true);
       dispatch(clearComments());
       fetchComments();
+      // setLoading(false);
     }
-  }, [searchParams.get('id'), dispatch, comment]);
+  }, [searchParams.get('id'), dispatch]);
 
   return (
     <div className="comment-wrapper">
@@ -68,26 +75,29 @@ export default function CommentBar() {
           ↑
         </button>
       </div>
-      {fetchedComments?.length === 0 ? (
-        <div className="no-comments">
-          <ChatBubbleOutlineIcon style={{ color: '#74a1e8', fontSize: '50px' }} />
-          <p>No comments yet. Be the first to comment!</p>
-        </div>
-      ) : (
-        <div className="comment-feed">
-          {fetchedComments?.map((item, index) => (
-            <div className="comment-item" key={index}>
-              <div className="avatar" style={{ backgroundColor: bgColor }}>
-                {item?.userId?.name.charAt(0).toUpperCase()}
+      {/* {loading ? (<CircularProgress/>) : ( */}
+        fetchedComments?.length === 0 ? (
+          <div className="no-comments">
+            <ChatBubbleOutlineIcon style={{ color: '#74a1e8', fontSize: '50px' }} />
+            <p>No comments yet. Be the first to comment!</p>
+          </div>
+        ) : (
+          <div className="comment-feed">
+            {fetchedComments?.map((item, index) => (
+              <div className="comment-item" key={index}>
+                <div className="avatar" style={{ backgroundColor: bgColor }}>
+                  {item?.userId?.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="comment-content">
+                  <div className="comment-name">{item?.userId?.name}</div>
+                  <div className="comment-text">{item?.comment}</div>
+                </div>
               </div>
-              <div className="comment-content">
-                <div className="comment-name">{item?.userId?.name}</div>
-                <div className="comment-text">{item?.comment}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )
+      {/* )} */}
+     
     </div>
   );
 }
