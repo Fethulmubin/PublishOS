@@ -83,10 +83,7 @@ export default function CommentBar() {
       </div>
         {fetchedComments?.length === 0 ? (
           <div className="no-comments">
-            {/* <ChatBubbleOutlineIcon style={{ color: '#74a1e8', fontSize: '50px' }} /> */}
-            {/* <CircularProgress/> */}
             <CommentLoad/>
-            {/* <p>No comments yet. Be the first to comment!</p> */}
           </div>
         ) : (
           <div className="comment-feed">
@@ -97,7 +94,12 @@ export default function CommentBar() {
                 </div>
                 <div className="comment-content">
                   <div className="comment-name">{item?.userId?.name}</div>
-                  <div className="comment-text">{item?.comment}</div>
+                  <div className="comment-text">
+                    {item?.comment} 
+                  </div>
+                  <span className="comment-date">
+                      {new Date(item?.createdAt).toLocaleDateString()} {new Date(item?.createdAt).toLocaleTimeString()}
+                    </span>
                 </div>
               </div>
             ))}
