@@ -13,8 +13,13 @@ export default function CommentBar() {
 
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
-  const comments = useSelector((state) => state.comment)
+  const comments = useSelector((state) => state.commentsReducer);
 
+  useEffect(() => {
+    if (comment) {
+      fetchComments();
+    }
+  }, [comment]);
 
   const handleAddComment = () => {
     if (comment.trim()) {
@@ -59,7 +64,7 @@ export default function CommentBar() {
       fetchComments();
       // setLoading(false);
     }
-  }, [searchParams.get('id'), dispatch]);
+  }, [searchParams.get('id')]);
 
   return (
     <div className="comment-wrapper">
@@ -75,11 +80,11 @@ export default function CommentBar() {
           ↑
         </button>
       </div>
-      {/* {loading ? (<CircularProgress/>) : ( */}
-        fetchedComments?.length === 0 ? (
+        {fetchedComments?.length === 0 ? (
           <div className="no-comments">
-            <ChatBubbleOutlineIcon style={{ color: '#74a1e8', fontSize: '50px' }} />
-            <p>No comments yet. Be the first to comment!</p>
+            {/* <ChatBubbleOutlineIcon style={{ color: '#74a1e8', fontSize: '50px' }} /> */}
+            <CircularProgress/>
+            {/* <p>No comments yet. Be the first to comment!</p> */}
           </div>
         ) : (
           <div className="comment-feed">
@@ -95,9 +100,7 @@ export default function CommentBar() {
               </div>
             ))}
           </div>
-        )
-      {/* )} */}
-     
+        )}
     </div>
   );
 }
