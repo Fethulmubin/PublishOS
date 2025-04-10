@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CircularProgress from '@mui/material/CircularProgress';
+import CommentLoad from "../LoadingSkeleton/CommentLoad";
 
 
 export default function CommentBar() {
@@ -83,7 +84,8 @@ export default function CommentBar() {
         {fetchedComments?.length === 0 ? (
           <div className="no-comments">
             {/* <ChatBubbleOutlineIcon style={{ color: '#74a1e8', fontSize: '50px' }} /> */}
-            <CircularProgress/>
+            {/* <CircularProgress/> */}
+            <CommentLoad/>
             {/* <p>No comments yet. Be the first to comment!</p> */}
           </div>
         ) : (
