@@ -1,16 +1,57 @@
-.login-info-container{
+.login-info-container {
     display: flex;
-    justify-content: space-around;
+    align-items: center;
     gap: 10px;
+    position: relative;
 }
-.login-info-container .login-avatar{
+
+.logout-button {
+    display: none;
+}
+
+.logout-popup {
+    position: absolute;
+    top: 60px; /* adjust based on your layout */
+    left: 0;
+    background-color: white;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    z-index: 1000;
+}
+.logout-popup p{
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    font-weight: 500;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: #333;
+    cursor: pointer;
+}
+.logout-popup p:hover{
+    color: rgb(121, 184, 243);
+}
+
+.logout-popup .logout-button {
+    display: block;
+}
+.login-info-container .login-avatar:hover {
+    cursor: pointer;
+    background-color: rgb(99, 176, 248);
+}
+.popup-arrow{
+    position: absolute;
+    top: -15px; /* adjust based on your layout */
+    left: 15px; /* adjust based on your layout */
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 10px solid rgb(96, 213, 248); /* color of the popup */
+}
     
-}
 @media (max-width: 700px){
     .login-info-container .login-name{
-        display: none;
-    }
-    .login-info-container .logout-button{
         display: none;
     }
 }

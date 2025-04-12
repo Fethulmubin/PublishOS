@@ -15,7 +15,8 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state?.auth.authData);
-    console.log(user)
+    const [showPopup, setShowPopup] = useState(false);
+    // console.log(user)
     const StyledBar = styled(AppBar)(() => (Styles.appBar));
     const StyledTypography = styled(Typography)(() => (Styles.heading));
     const StyledToolbar = styled(Toolbar)(() => (Styles.toolbar));
@@ -24,7 +25,11 @@ const Navbar = () => {
         dispatch({ type: 'LOGOUT' });
         navigate('/');
     };
-
+    const togglePopup = () => {
+        // Only toggle on mobile screens
+            setShowPopup(!showPopup);
+        
+    };
 
     return (
         <StyledBar position='static' color='inherit' className={Styles.appBar} style={{ height: '80px', display: 'flex', justifyContent: 'space-around' }}>
@@ -45,15 +50,31 @@ const Navbar = () => {
             <StyledToolbar>
                 {user ? (
                     <div className="login-info-container" >
-                        <Avatar className='login-avatar' alt={user?.result?.name} src={user?.result?.imageURL}>
+                        <Avatar onClick={togglePopup} className='login-avatar' alt={user?.result?.name} src={user?.result?.imageURL}>
                             {user?.result?.name?.charAt(0).toUpperCase()}
                         </Avatar>
                         <StyledTypography className='login-name' variant='h6'>
                             {user?.result?.name}
                         </StyledTypography>
-                        <Button onClick={logout} variant='contained' className='logout-button' color='secondary'>
+                        {showPopup && (
+                            <div className="logout-popup">
+                                <Button
+                                    onClick={logout}
+                                    variant="contained"
+                                    className="logout-button"
+                                    color="secondary"
+                                >
+                                    Logout
+                                </Button>
+                                <hr />
+                                <p>My Account</p>
+                                <div className="popup-arrow"></div>
+                            </div>
+                        )}
+                        {/* <Button onClick={logout} variant='contained' className='logout-button' color='secondary'>
                             Logout
-                        </Button>
+                        </Button> */}
+
                     </div>
                 ) : (
                     <Button component={Link} to='/auth' variant='contained' color='primary'>
