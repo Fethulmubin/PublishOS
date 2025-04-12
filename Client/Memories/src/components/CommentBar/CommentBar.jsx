@@ -95,7 +95,9 @@ export default function CommentBar() {
                   {item?.userId?.name.charAt(0).toUpperCase()}
                 </div>
                 <div className='comment-content'>
-                  <div className='comment-name'>{item?.userId?.name  ===  user?.result?.name ? 'You' : item.userId?.name}</div>
+                  <div className='comment-name'>{item?.userId?.name  ===  user?.result?.name ? 'You' : item.userId?.name}
+                      { item?.userId?.name  ===  user?.result?.name && <div className="dot"></div>}
+                  </div>
                   <div className="comment-text">
                     {item?.comment} 
                   </div>
