@@ -6,6 +6,7 @@ import memory from '../../assets/memory.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import memories from '../../assets/memories.png';
 import './NavBar.css'
 // import jwt_decode from 'jwt-decode';
 
@@ -37,15 +38,14 @@ const Navbar = () => {
                 className={Styles.brandContainer}
                 style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
                     flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-                    alignItems: 'center',
+                    width: '100%',
                 }}
             >
                 <StyledTypography className={Styles.heading} component={Link} to='/' variant='h3' align='center'>
-                    Memories
+                    <img className={Styles.image} src={memories} alt="memories" width={300} />
                 </StyledTypography>
-                <img className={Styles.image} src={memory} alt="memories" height='50' />
+                {/* <img className={Styles.image} src={memory} alt="memories" height='50' /> */}
             </div>
             <StyledToolbar>
                 {user ? (
