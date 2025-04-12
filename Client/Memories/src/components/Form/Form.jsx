@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 // import { useSelector } from "react-redux";
 import { styled } from "@mui/system";
-import { Styles } from "./styles";
+// import { Styles } from "./styles";
 import { TextField, Button, Typography, Paper } from "@mui/material";
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
+import { StyledPaper, StyledButton, StyledTextField, Styles } from './styles';
 
-  //my styled components
-  const StyledPaper = styled(Paper)(() => Styles.paper);
-  const StyledButton = styled(Button)(() => Styles.buttonSubmit);
-  const StyledTextField = styled(TextField)(() => Styles.textField);
   
 
 function Form({currentId, setCurrentId}) {

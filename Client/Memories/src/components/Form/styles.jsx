@@ -1,29 +1,72 @@
-// import { TextField } from "@mui/material";
+// // import { TextField } from "@mui/material";
 
-import { blue } from "@mui/material/colors";
+// import { blue } from "@mui/material/colors";
 
+// export const Styles = {
+//     root: {
+//           margin: '20px',
+//         },
+//       paper: {
+//         padding: '20px',
+//         margin : '20px'
+//       },
+//       form: {
+//         display: 'flex',
+//         flexWrap: 'wrap',
+//         justifyContent: 'center',
+//       },
+//       fileInput: {
+//         width: '97%',
+//         margin: '20px',
+//       },
+//       buttonSubmit: {
+//         marginBottom: 10,
+//         color : blue,
+//       },
+//       textField:{
+//         margin : '5px'
+//       }
+//   }
+// Style.jsx
+import { styled } from '@mui/system';
+import { Paper, Button, TextField, Grid } from '@mui/material';
+import { blue } from '@mui/material/colors';
+
+// Styled Components
+export const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: '20px',
+  margin: '20px',
+}));
+
+export const StyledButton = styled(Button)(({ theme }) => ({
+  marginBottom: '10px',
+  color: blue[500],
+}));
+
+export const StyledTextField = styled(TextField)(({ theme }) => ({
+  margin: '5px',
+}));
+
+export const StyledGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  alignItems: 'stretch',
+  padding: theme.spacing(2, 0),
+}));
+
+// Other non-component styles
 export const Styles = {
-    root: {
-          margin: '20px',
-        },
-      paper: {
-        padding: '20px',
-        margin : '20px'
-      },
-      form: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-      },
-      fileInput: {
-        width: '97%',
-        margin: '20px',
-      },
-      buttonSubmit: {
-        marginBottom: 10,
-        color : blue,
-      },
-      textField:{
-        margin : '5px'
-      }
-  }
+  root: {
+    margin: '20px',
+  },
+  form: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  fileInput: {
+    width: '97%',
+    margin: '20px',
+  },
+};
