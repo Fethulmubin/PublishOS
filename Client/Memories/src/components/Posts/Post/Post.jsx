@@ -16,15 +16,12 @@ import CommentBar from '../../CommentBar/CommentBar';
 import { useParams, useSearchParams } from 'react-router-dom';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { useSelector } from 'react-redux';
-// import {StyledCard} from './styles';
-
 
 
 
 function Post({ post, setCurrentId, currentId }) {
 
-  // const [Render, setRender] = useState(false)
-  // const user = useSelector((state) => state?.auth.authData);
+
   const user = useSelector((state) => state?.auth.authData);
   // console.log(user)
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,7 +83,8 @@ function Post({ post, setCurrentId, currentId }) {
               <EditIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
             </Button>
             <Button style={{ color: 'blue' }} size='small' onClick={() => {
-              searchParams.get('id') ? setSearchParams({}) : setSearchParams({ id: post._id })
+              searchParams.get('id') ? setSearchParams({}) : setSearchParams({ id: post._id } )
+              window.scrollTo(0, 0);
             }}>
               <CommentIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
             </Button>

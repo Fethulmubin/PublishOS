@@ -14,8 +14,6 @@ import { StyledGrid } from './styles';
 function Posts({setCurrentId}) {
   const posts = useSelector((state)=> state.posts)
   const [searchParams, setSearchParams] = useSearchParams();
-  // const StyledGrid = styled(Grid)(()=> (Styles.mainContainer));
-      // const StyledToolbar = styled(Toolbar)(() => (Styles.toolbar));
 
   return(
     !posts.length? <LoadingSkeleton cards={4}/>:
