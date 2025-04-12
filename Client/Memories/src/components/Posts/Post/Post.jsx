@@ -16,6 +16,8 @@ import CommentBar from '../../CommentBar/CommentBar';
 import { useParams, useSearchParams } from 'react-router-dom';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { useSelector } from 'react-redux';
+// import {StyledCard} from './styles';
+
 
 
 
@@ -29,16 +31,16 @@ function Post({ post, setCurrentId, currentId }) {
   
 
   const dispatch = useDispatch();
-  const StyledCard = styled(Card)(() => Styles.card)
-  const StyledTypography = styled(Typography)(() => Styles.title)
-  const StyledCardActions = styled(CardActions)(() => Styles.cardActions)
-  const StyledCardMedia = styled(CardMedia)(() => Styles.media)
+  const StyledCard = styled(Card)(() => (Styles.card))
+  const StyledTypography = styled(Typography)(() => (Styles.title))
+  const StyledCardActions = styled(CardActions)(() => (Styles.cardActions))
+  const StyledCardMedia = styled(CardMedia)(() => (Styles.media))
 
   const handleLike = () => {
     dispatch(likePost(post?._id))
   }
   return (
-    <>
+    
       <StyledCard style={{ marginBottom: '10px' }}>
         <StyledCardMedia image={post.selectedFile}
           title={post.title} />
@@ -93,7 +95,7 @@ function Post({ post, setCurrentId, currentId }) {
       </StyledCard>
 
 
-    </>
+    
   )
 }
 

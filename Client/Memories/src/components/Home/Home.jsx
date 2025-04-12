@@ -5,7 +5,7 @@ import { Container, AppBar, Typography, Grow, Grid } from '@mui/material'
 import Posts from '../Posts/Posts'
 import Form from '../Form/Form'
 import { getPost } from '../../actions/posts'
-import { styled } from "@mui/system";
+// import { styled } from "@mui/system";
 import { useSearchParams } from 'react-router-dom'
 import CommentBar from '../CommentBar/CommentBar'
 
@@ -13,8 +13,6 @@ import CommentBar from '../CommentBar/CommentBar'
 const Home = () => {
     const [currentId, setCurrentId] = useState(null)
     const [isSignup, setIsSignup] = useState(false);
-    const StyledBar = styled(AppBar)(() => (Styles.appBar))
-    const StyledTypography = styled(Typography)(() => (Styles.heading))
     const [searchParams, setSearchParams] = useSearchParams();
 
     const isCommenting = Boolean(searchParams.get('id'));
@@ -39,31 +37,35 @@ const Home = () => {
 
     return (
         <Grow in>
-            <Container>
-                <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
-                    <Grid item xs={12} sm={7}>
-                        <div
-                            style={{
-                                filter: isCommenting ? 'blur(5px)' : 'none',
-                                transition: 'filter 0.3s ease'
-                            }}
-                        >
-                            <Posts currentId={currentId} setCurrentId={setCurrentId} />
-                        </div>
-                    </Grid>
-
-                    <Grid item xs={12} sm={4}>
-                        <div ref={commentRef}>
-                            {
-                                isCommenting
-                                    ? <CommentBar />
-                                    : <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
-                            }
-                        </div>
-                    </Grid>
-                </Grid>
-            </Container>
-        </Grow>
+        <Container>
+          <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
+            
+            {/* Form or Comment - Always above Posts */}
+            <Grid item xs={12}>
+              <div ref={commentRef}>
+                {
+                  isCommenting
+                    ? <CommentBar />
+                    : <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
+                }
+              </div>
+            </Grid>
+      
+            {/* Posts */}
+            <Grid item xs={12}>
+              <div
+                style={{
+                  filter: isCommenting ? 'blur(5px)' : 'none',
+                  transition: 'filter 0.3s ease'
+                }}
+              >
+                <Posts currentId={currentId} setCurrentId={setCurrentId} />
+              </div>
+            </Grid>
+      
+          </Grid>
+        </Container>
+      </Grow>
     )
 }
 
