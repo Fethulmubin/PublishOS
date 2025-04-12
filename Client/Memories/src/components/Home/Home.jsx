@@ -38,34 +38,34 @@ const Home = () => {
     
 
     return (
-        <Grow in>
-        <Container>
-          <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
-            
-            {/* Form or Comment - Always above Posts */}
-            <Grid item xs={12}>
-              <div ref={commentRef}>
-                {
-                  isCommenting
-                    ? <CommentBar />
-                    : <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
-                }
-              </div>
-            </Grid>
+      <Grow in>
+      <Container>
+        <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
+        
+        {/* Form or Comment - Always above Posts */}
+        <Grid item xs={12}>
+          <div ref={commentRef}>
+          {
+            isCommenting
+            ? <CommentBar />
+            : <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
+          }
+          </div>
+        </Grid>
     
-            <Grid item xs={12}>
-              <div
-                style={{
-                  filter: isCommenting ? 'blur(5px)' : 'none',
-                  transition: 'filter 0.3s ease'
-                }}
-              >
-                <Posts currentId={currentId} setCurrentId={setCurrentId} />
-              </div>
-            </Grid>
+        <Grid item xs={12}>
+          <div
+          style={{
+            filter: isCommenting ? 'blur(5px)' : 'none',
+            transition: 'filter 0.3s ease'
+          }}
+          >
+          <Posts currentId={currentId} setCurrentId={setCurrentId} />
+          </div>
+        </Grid>
       
-          </Grid>
-        </Container>
+        </Grid>
+      </Container>
       </Grow>
     )
 }

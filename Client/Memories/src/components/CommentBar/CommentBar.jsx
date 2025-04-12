@@ -3,16 +3,13 @@ import "./commentBar.css";
 import { addcomment, getcomment } from '../../actions/comments'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import CircularProgress from '@mui/material/CircularProgress';
 import CommentLoad from "../LoadingSkeleton/CommentLoad";
 import moment from "moment";
-import { useRef } from "react";
+
 
 
 export default function CommentBar() {
   const [comment, setComment] = useState('');
-  const [loading, setLoading] = useState(false)
 
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
@@ -38,9 +35,9 @@ export default function CommentBar() {
     }
   };
   const fetchComments = () => {
-    // setLoading(true);
+
     dispatch(getcomment(searchParams.get('id')))
-    // setLoading(false);
+
   }
 
   const clearComments = () => ({
