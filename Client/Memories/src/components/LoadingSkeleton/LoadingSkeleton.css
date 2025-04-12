@@ -9,4 +9,13 @@
 .skeleton-text {
     margin-top: 10px;
 }
-
+@media (max-width : 700px){
+    .skeleton-container {
+        grid-template-columns: 1fr;
+        column-gap: 0px;
+        row-gap: 10px;
+    }
+    .skeleton-text {
+        margin-top: 5px;
+    }
+}

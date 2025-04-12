@@ -1,0 +1,16 @@
+.login-info-container{
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+.login-info-container .login-avatar{
+    
+}
+@media (max-width: 700px){
+    .login-info-container .login-name{
+        display: none;
+    }
+    .login-info-container .logout-button{
+        display: none;
+    }
+}

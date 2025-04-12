@@ -6,6 +6,7 @@ import memory from '../../assets/memory.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import './NavBar.css'
 // import jwt_decode from 'jwt-decode';
 
 const Navbar = () => {
@@ -27,7 +28,15 @@ const Navbar = () => {
 
     return (
         <StyledBar position='static' color='inherit' className={Styles.appBar} style={{ height: '80px', display: 'flex', justifyContent: 'space-around' }}>
-            <div className={Styles.brandContainer} style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div
+                className={Styles.brandContainer}
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+                    alignItems: 'center',
+                }}
+            >
                 <StyledTypography className={Styles.heading} component={Link} to='/' variant='h3' align='center'>
                     Memories
                 </StyledTypography>
@@ -35,14 +44,14 @@ const Navbar = () => {
             </div>
             <StyledToolbar>
                 {user ? (
-                    <div className={Styles.profile} style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
-                        <Avatar className={Styles.purple} alt={user?.result?.name} src={user?.result?.imageURL}>
-                            {user?.result?.name?.charAt(0)}
+                    <div className="login-info-container" >
+                        <Avatar className='login-avatar' alt={user?.result?.name} src={user?.result?.imageURL}>
+                            {user?.result?.name?.charAt(0).toUpperCase()}
                         </Avatar>
-                        <StyledTypography className={Styles.userName} variant='h6'>
+                        <StyledTypography className='login-name' variant='h6'>
                             {user?.result?.name}
                         </StyledTypography>
-                        <Button onClick={logout} variant='contained' className={Styles.Logout} color='secondary'>
+                        <Button onClick={logout} variant='contained' className='logout-button' color='secondary'>
                             Logout
                         </Button>
                     </div>
