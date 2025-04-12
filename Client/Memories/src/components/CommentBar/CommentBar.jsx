@@ -7,6 +7,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CircularProgress from '@mui/material/CircularProgress';
 import CommentLoad from "../LoadingSkeleton/CommentLoad";
 import moment from "moment";
+import { useRef } from "react";
 
 
 export default function CommentBar() {
@@ -16,19 +17,22 @@ export default function CommentBar() {
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const comments = useSelector((state) => state.commentsReducer);
+  const user = useSelector((state => state?.auth?.authData));
+
 
   useEffect(() => {
-    if (comment) {
+    if (searchParams.get('id')) {
       fetchComments();
     }
-  }, [comment]);
+  }, [searchParams.get('id')]);
 
   const handleAddComment = () => {
     if (comment.trim()) {
-      // setLoading(true);
-      dispatch(addcomment(searchParams.get('id'), comment));
-      setComment(""); // clear field
-      // setLoading(false);
+      dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
+        fetchComments(); // Fetch updated comments after adding a new one
+        setComment(""); // clear field
+      });
+
     } else {
       console.log("Input was empty, not submitting");
     }
@@ -89,12 +93,12 @@ export default function CommentBar() {
         ) : (
           <div className="comment-feed">
             {fetchedComments?.map((item, index) => (
-              <div className="comment-item" key={index}>
+              <div className={item?.userId?.name ===  user?.result?.name ? 'comment-right' : 'comment-item'} key={index}>
                 <div className="avatar" style={{ backgroundColor: bgColor }}>
                   {item?.userId?.name.charAt(0).toUpperCase()}
                 </div>
-                <div className="comment-content">
-                  <div className="comment-name">{item?.userId?.name}</div>
+                <div className='comment-content'>
+                  <div className='comment-name'>{item?.userId?.name  ===  user?.result?.name ? 'You' : item.userId?.name}</div>
                   <div className="comment-text">
                     {item?.comment} 
                   </div>

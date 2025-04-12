@@ -36,7 +36,6 @@ import { blue } from '@mui/material/colors';
 export const StyledPaper = styled(Paper)(({ theme }) => ({
 
   padding: '10px',
-  // margin: '10px',
   display: 'flex',
   justifySelf: 'center',
   justifyContent: 'center',

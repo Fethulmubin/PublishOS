@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 // import { useSelector } from "react-redux";
 import { styled } from "@mui/system";
 // import { Styles } from "./styles";
@@ -12,7 +12,8 @@ import { StyledPaper, StyledButton, StyledTextField, Styles } from './styles';
 
 function Form({ currentId, setCurrentId }) {
   const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
-  const user = useSelector((state) => state.auth.authData);
+  const user = useSelector((state) => state?.auth?.authData);
+     const form = useRef();
   const [postData, setPostData] = useState({
     creator: "",
     title: "",
@@ -21,7 +22,7 @@ function Form({ currentId, setCurrentId }) {
     selectedFile: "",
   });
   const [shouldRerender, setShouldRerender] = useState(false);
-  const [drop, setDrop] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
   useEffect(() => {
     if (post) setPostData(post)
     // dispatch(getPost())
@@ -33,6 +34,17 @@ function Form({ currentId, setCurrentId }) {
       setShouldRerender(false); // Reset the state to avoid infinite loop
     }
   }, [shouldRerender]);
+
+  //for form
+   useEffect(() => {
+          const handleClickOutside = (e) => {
+              if (form.current && !form.current.contains(e.target)) {
+                  setFocusedField('')
+              }
+          };
+          document.addEventListener("mousedown", handleClickOutside);
+          return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, []);
 
   const dispatch = useDispatch();
 
@@ -68,10 +80,11 @@ function Form({ currentId, setCurrentId }) {
         <form
           autoComplete="off"
           onSubmit={handleSubmit}
+          ref={form}
           className={Styles.form}
           style={{width: '70%', justifySelf: 'center'}}
         >
-          {/* <Typography
+          <Typography
             variant="h5"
             sx={{
               fontWeight: 'bold',
@@ -83,22 +96,22 @@ function Form({ currentId, setCurrentId }) {
             }}
           >
             Share your memories ✨
-          </Typography> */}
+          </Typography>
           <StyledTextField
             name="creator"
-            label="Start sharing by entering your name"
+            label="Your Name"
             variant="outlined"
             fullWidth
             value={postData.creator}
-            onFocus={() => setDrop(true)}
-            onBlur={() => setDrop(false)}
+            onFocus={() => setFocusedField("creator")}
+            // onBlur={() => setFocusedField(null)}
             onChange={(e) =>
               setPostData({ ...postData, creator: e.target.value })
             }
             style={{borderRadius: '60px', justifySelf: 'center'}}
           />
         
-          {drop ? <><StyledTextField
+          {focusedField ? <><StyledTextField
             name="title"
             label="Title eg: visit Ethiopia"
             variant="outlined"
