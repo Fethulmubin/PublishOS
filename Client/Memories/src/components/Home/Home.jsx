@@ -15,7 +15,7 @@ const Home = () => {
     const [isSignup, setIsSignup] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const isCommenting = Boolean(searchParams.get('id'));
+    var isCommenting = Boolean(searchParams.get('id'));
     const commentRef = useRef();
 
     const dispatch = useDispatch();
@@ -29,11 +29,13 @@ const Home = () => {
         const handleClickOutside = (e) => {
             if (isCommenting && commentRef.current && !commentRef.current.contains(e.target)) {
                 setSearchParams({});
+                
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isCommenting, setSearchParams]);
+    }, [isCommenting, setSearchParams,]);
+    
 
     return (
         <Grow in>
@@ -50,8 +52,7 @@ const Home = () => {
                 }
               </div>
             </Grid>
-      
-            {/* Posts */}
+    
             <Grid item xs={12}>
               <div
                 style={{
