@@ -28,14 +28,21 @@
 //       }
 //   }
 // Style.jsx
-import { styled } from '@mui/system';
+import { border, styled } from '@mui/system';
 import { Paper, Button, TextField, Grid } from '@mui/material';
 import { blue } from '@mui/material/colors';
 
 // Styled Components
 export const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: '20px',
-  margin: '20px',
+
+  padding: '10px',
+  // margin: '10px',
+  display: 'flex',
+  justifySelf: 'center',
+  justifyContent: 'center',
+  border: '1px solid #ccc',
+  borderRadius: '20px',
+  width: '50%'
 }));
 
 export const StyledButton = styled(Button)(({ theme }) => ({
@@ -45,6 +52,7 @@ export const StyledButton = styled(Button)(({ theme }) => ({
 
 export const StyledTextField = styled(TextField)(({ theme }) => ({
   margin: '5px',
+  // borderRadius: '60px'
 }));
 
 export const StyledGrid = styled(Grid)(({ theme }) => ({
