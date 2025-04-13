@@ -8,66 +8,120 @@ import { getPost } from '../../actions/posts'
 // import { styled } from "@mui/system";
 import { useSearchParams } from 'react-router-dom'
 import CommentBar from '../CommentBar/CommentBar'
+import NavBottom from '../NavBottom/NavBottom'
 
 
 const Home = () => {
-    const [currentId, setCurrentId] = useState(null)
-    const [isSignup, setIsSignup] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
+  const [currentId, setCurrentId] = useState(null)
+  const [isSignup, setIsSignup] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(showForm)
+// setShowForm(false)
+  var isCommenting = Boolean(searchParams.get('id'));
+  const commentRef = useRef();
 
-    var isCommenting = Boolean(searchParams.get('id'));
-    const commentRef = useRef();
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getPost());
+  }, [dispatch]);
 
-    useEffect(() => {
-        dispatch(getPost());
-    }, [dispatch]);
+  // Handle outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (commentRef.current && !commentRef.current.contains(e.target)) {
+        const postsDiv = document.getElementById('posts');
+        if (postsDiv && postsDiv.contains(e.target)) {
+          return; // Do nothing if clicking inside the posts div
+        }
+        setSearchParams({})
+       // Hide the form when clicking outside
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isCommenting, setSearchParams,]);
 
-    // Handle outside click
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (isCommenting && commentRef.current && !commentRef.current.contains(e.target)) {
-                setSearchParams({});
-                
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isCommenting, setSearchParams,]);
-    
 
-    return (
+  return (
+    <>
       <Grow in>
-      <Container>
-        <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
-        
-        {/* Form or Comment - Always above Posts */}
-        <Grid item xs={12}>
-          <div ref={commentRef}>
-          {
-            isCommenting
-            ? <CommentBar />
-            : <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} />
-          }
-          </div>
-        </Grid>
-    
-        <Grid item xs={12}>
-          <div
-          style={{
-            filter: isCommenting ? 'blur(5px)' : 'none',
-            transition: 'filter 0.3s ease'
-          }}
+        <Container style={{ position: 'relative' }}>
+          <Grid container justifyContent='space-between' alignItems='stretch' spacing={3}>
+            <Grid item xs={12}>
+              {/* Posts with blur effect */}
+              <div
+                style={{
+                  filter: isCommenting ? 'blur(5px)' : 'none',
+                  transition: 'filter 0.3s ease'
+                }}
+              >
+                <Posts currentId={currentId} setCurrentId={setCurrentId}  />
+              </div>
+            </Grid>
+          </Grid>
+
+          {/* Overlay popup */}
+          {isCommenting ?  (
+            <div
+              ref={commentRef}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0,0,0,0.3)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 1000,
+              }}
+            >
+              <div style={{
+                background: '#fff',
+                padding: '20px',
+                borderRadius: '10px',
+                maxWidth: '600px',
+                width: '90%',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+              }}>   
+                <CommentBar /> 
+              </div>
+            </div>
+            ) :  showForm && <div
+            ref={commentRef}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0,0,0,0.3)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1000,
+            }}
           >
-          <Posts currentId={currentId} setCurrentId={setCurrentId} />
-          </div>
-        </Grid>
-      
-        </Grid>
-      </Container>
+            <div style={{
+              background: '#fff',
+              padding: '20px',
+              borderRadius: '10px',
+              maxWidth: '600px',
+              width: '90%',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+            }}>   
+              <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} setShowForm={setShowForm} showForm={showForm}/> 
+            </div>
+          </div>}
+        </Container>
       </Grow>
-    )
+
+      <NavBottom setShowForm ={setShowForm} showForm={showForm} />
+    </>
+  )
 }
 
 export default Home;

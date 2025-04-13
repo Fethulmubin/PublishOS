@@ -10,10 +10,10 @@ import { StyledPaper, StyledButton, StyledTextField, Styles } from './styles';
 
 
 
-function Form({ currentId, setCurrentId }) {
+function Form({ currentId, setCurrentId, showForm, setShowForm }) {
   const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
   const user = useSelector((state) => state?.auth?.authData);
-     const form = useRef();
+  const form = useRef();
   const [postData, setPostData] = useState({
     creator: "",
     title: "",
@@ -36,15 +36,20 @@ function Form({ currentId, setCurrentId }) {
   }, [shouldRerender]);
 
   //for form
-   useEffect(() => {
-          const handleClickOutside = (e) => {
-              if (form.current && !form.current.contains(e.target)) {
-                  setFocusedField('')
-              }
-          };
-          document.addEventListener("mousedown", handleClickOutside);
-          return () => document.removeEventListener("mousedown", handleClickOutside);
-      }, []);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (form.current && !form.current.contains(e.target)) {
+        const postsDiv = document.getElementById('posts');
+        if (postsDiv && postsDiv.contains(e.target)) {
+          return; // Do nothing if clicking inside the posts div
+        }
+        setShowForm(!showForm);
+       // Hide the form when clicking outside
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const dispatch = useDispatch();
 
@@ -82,7 +87,7 @@ function Form({ currentId, setCurrentId }) {
           onSubmit={handleSubmit}
           ref={form}
           className={Styles.form}
-          style={{width: '70%', justifySelf: 'center'}}
+          style={{ width: '70%', justifySelf: 'center' }}
         >
           <Typography
             variant="h5"
@@ -103,15 +108,13 @@ function Form({ currentId, setCurrentId }) {
             variant="outlined"
             fullWidth
             value={postData.creator}
-            onFocus={() => setFocusedField("creator")}
-            // onBlur={() => setFocusedField(null)}
             onChange={(e) =>
               setPostData({ ...postData, creator: e.target.value })
             }
-            style={{borderRadius: '60px', justifySelf: 'center'}}
+            style={{ borderRadius: '60px', justifySelf: 'center' }}
           />
-        
-          {focusedField ? <><StyledTextField
+
+          <StyledTextField
             name="title"
             label="Title eg: visit Ethiopia"
             variant="outlined"
@@ -122,58 +125,58 @@ function Form({ currentId, setCurrentId }) {
             }
           />
 
-            <StyledTextField
-              name="message"
-              label="Message"
-              variant="outlined"
-              fullWidth
-              value={postData.message}
-              onChange={(e) =>
-                setPostData({ ...postData, message: e.target.value })
+          <StyledTextField
+            name="message"
+            label="Message"
+            variant="outlined"
+            fullWidth
+            value={postData.message}
+            onChange={(e) =>
+              setPostData({ ...postData, message: e.target.value })
+            }
+          />
+
+          <StyledTextField
+            label="tags"
+            variant="outlined"
+            fullWidth
+            value={postData.tags}
+            onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+          />
+
+          <div className={Styles.fileInput}>
+            <FileBase
+              type="file"
+              multiple={false}
+              onDone={({ base64 }) =>
+                setPostData({ ...postData, selectedFile: base64 })
               }
             />
+          </div>
 
-            <StyledTextField
-              label="tags"
-              variant="outlined"
-              fullWidth
-              value={postData.tags}
-              onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
-            />
+          <StyledButton
+            variant="container"
+            color="primary"
+            size="large"
+            type="submit"
 
-            <div className={Styles.fileInput}>
-              <FileBase
-                type="file"
-                multiple={false}
-                onDone={({ base64 }) =>
-                  setPostData({ ...postData, selectedFile: base64 })
-                }
-              />
-            </div>
+            fullWidth
 
-            <StyledButton
-              variant="container"
-              color="primary"
-              size="large"
-              type="submit"
+          >
+            Post
+          </StyledButton>
+          <Button
+            variant="container"
+            color="secondary"
+            size="small"
+            onClick={clear}
+            fullWidth
+          >
+            Clear
+          </Button>
 
-              fullWidth
-
-            >
-              Post
-            </StyledButton>
-            <Button
-              variant="container"
-              color="secondary"
-              size="small"
-              onClick={clear}
-              fullWidth
-            >
-              Clear
-            </Button> </> : <></>}
-          
         </form>
-      </StyledPaper>  : <Paper className={Styles.paper}>
+      </StyledPaper> : <Paper className={Styles.paper}>
         <Typography variant="h6" align="center">
           Please Sign In to create your own memories and like other's memories.
         </Typography>

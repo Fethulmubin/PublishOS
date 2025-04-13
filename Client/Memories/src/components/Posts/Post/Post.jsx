@@ -81,13 +81,13 @@ function Post({ post, setCurrentId, currentId }) {
           <div className={Styles.overlay2} style={{ gap: '5px' }}>
             <Button style={{ color: 'blue' }} size='small' onClick={() => {
               setCurrentId(post._id)
-              window.scrollTo(0, 0);
+              // window.scrollTo(0, 0);
             }}>
               <MoreVertIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
             </Button>
             <Button style={{ color: 'blue' }} size='small' onClick={() => {
               searchParams.get('id') ? setSearchParams({}) : setSearchParams({ id: post._id } )
-              window.scrollTo(0, 0);
+              // window.scrollTo(0, 0);
             }}>
               <CommentIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
             </Button>
