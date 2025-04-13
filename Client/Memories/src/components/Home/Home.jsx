@@ -16,7 +16,7 @@ const Home = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(showForm)
+  // console.log(showForm)
 // setShowForm(false)
   var isCommenting = Boolean(searchParams.get('id'));
   const commentRef = useRef();
@@ -30,7 +30,7 @@ const Home = () => {
   // Handle outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (commentRef.current && !commentRef.current.contains(e.target)) {
+      if (isCommenting && commentRef.current && !commentRef.current.contains(e.target)) {
         const postsDiv = document.getElementById('posts');
         if (postsDiv && postsDiv.contains(e.target)) {
           return; // Do nothing if clicking inside the posts div
@@ -53,11 +53,11 @@ const Home = () => {
               {/* Posts with blur effect */}
               <div
                 style={{
-                  filter: isCommenting ? 'blur(5px)' : 'none',
+                  filter: isCommenting ? 'blur(5px)' :'none',
                   transition: 'filter 0.3s ease'
                 }}
               >
-                <Posts currentId={currentId} setCurrentId={setCurrentId}  />
+                <Posts setShowForm={setShowForm} showForm={showForm} currentId={currentId} setCurrentId={setCurrentId} />
               </div>
             </Grid>
           </Grid>

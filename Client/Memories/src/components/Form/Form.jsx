@@ -40,6 +40,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
     const handleClickOutside = (e) => {
       if (form.current && !form.current.contains(e.target)) {
         const postsDiv = document.getElementById('posts');
+        // console.log(postsDiv)
         if (postsDiv && postsDiv.contains(e.target)) {
           return; // Do nothing if clicking inside the posts div
         }

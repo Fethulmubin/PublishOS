@@ -21,7 +21,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 
-function Post({ post, setCurrentId, currentId }) {
+function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
 
 
   const user = useSelector((state) => state?.auth.authData);
@@ -81,6 +81,7 @@ function Post({ post, setCurrentId, currentId }) {
           <div className={Styles.overlay2} style={{ gap: '5px' }}>
             <Button style={{ color: 'blue' }} size='small' onClick={() => {
               setCurrentId(post._id)
+              setShowForm(!showForm)
               // window.scrollTo(0, 0);
             }}>
               <MoreVertIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
