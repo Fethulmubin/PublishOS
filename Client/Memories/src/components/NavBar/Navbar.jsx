@@ -45,7 +45,7 @@ const Navbar = () => {
                 <StyledTypography className={Styles.heading} component={Link} to='/' variant='h3' align='center'>
                     <img className={Styles.image} src={memories} alt="memories" width={300} />
                 </StyledTypography>
-                {/* <img className={Styles.image} src={memory} alt="memories" height='50' /> */}
+
             </div>
             <StyledToolbar>
                 {user ? (
