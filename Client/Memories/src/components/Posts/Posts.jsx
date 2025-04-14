@@ -9,7 +9,7 @@ import LoadingSkeleton from '../LoadingSkeleton/LoadingSkeleton'
 import { StyledGrid } from './styles';
 // import './posts.css'
 
-function Posts({setCurrentId,  showForm, setShowForm}) {
+function Posts({setCurrentId,  showForm, setShowForm, getLocation}) {
   const posts = useSelector((state)=> state.posts)
 
   return(
@@ -17,7 +17,7 @@ function Posts({setCurrentId,  showForm, setShowForm}) {
     <StyledGrid  container alignItems = "stretch" spacing = {3}>
       {posts.map(post => (
       <Grid key={post._id} item xs={12} sm={6} md={6} >
-        <Post setShowForm={setShowForm} showForm={showForm} post = {post} setCurrentId={setCurrentId}/>
+        <Post getLocation={getLocation} setShowForm={setShowForm} showForm={showForm} post = {post} setCurrentId={setCurrentId}/>
       </Grid>  
   ))}
 

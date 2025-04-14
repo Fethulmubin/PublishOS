@@ -2,26 +2,22 @@ import React from 'react'
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CommentIcon from '@mui/icons-material/Comment';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/system'
 import { Styles } from './styles'
-import { useState, useEffect } from 'react';
 import moment from 'moment'
 import { useDispatch } from 'react-redux';
 import { deletePost, likePost } from '../../../actions/posts';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CommentBar from '../../CommentBar/CommentBar';
 import { useParams, useSearchParams } from 'react-router-dom';
-
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { useSelector } from 'react-redux';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 
-function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
+function Post({ post, setCurrentId, currentId, showForm, setShowForm, getLocation = () => {} }) {
 
 
   const user = useSelector((state) => state?.auth.authData);
@@ -88,7 +84,7 @@ function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
             </Button>
             <Button style={{ color: 'blue' }} size='small' onClick={() => {
               searchParams.get('id') ? setSearchParams({}) : setSearchParams({ id: post._id } )
-              // window.scrollTo(0, 0);
+                getLocation(event)
             }}>
               <CommentIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
             </Button>

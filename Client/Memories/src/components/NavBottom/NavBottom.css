@@ -25,10 +25,17 @@
     transition: all 0.2s ease;
   }
   
-  .nav-item.active {
-    color: #0a66c2; /* LinkedIn blue */
+  /* .nav-item.active {
+    background-color: #b0b4bb; /* LinkedIn blue */
+  .nav-item:hover {
+    background-color: #d1cfcf; /* Light gray on hover */
   }
-  
+  .nav-item{
+    border: 1px solid transparent;
+    transition: border 0.3s ease;
+    border-radius: 8px;
+
+  }
   .nav-item.active .nav-icon {
     transform: translateY(-2px);
   }

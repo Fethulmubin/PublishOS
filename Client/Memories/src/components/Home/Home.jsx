@@ -16,8 +16,10 @@ const Home = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
   // console.log(showForm)
-// setShowForm(false)
+  // setShowForm(false)
   var isCommenting = Boolean(searchParams.get('id'));
   const commentRef = useRef();
 
@@ -26,6 +28,16 @@ const Home = () => {
   useEffect(() => {
     dispatch(getPost());
   }, [dispatch]);
+
+  const getLocation = (e) => {
+    // const x = e.clientX;
+    // const y = e.clientY;
+    setX(e.clientX);
+    setY(e.clientY);
+    // console.log(x, y)
+    window.scrollTo(x, y);
+    // console.log(`Clicked at: X=${x}, Y=${y}`);
+  }
 
   // Handle outside click
   useEffect(() => {
@@ -36,7 +48,7 @@ const Home = () => {
           return; // Do nothing if clicking inside the posts div
         }
         setSearchParams({})
-       // Hide the form when clicking outside
+        // Hide the form when clicking outside
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -53,26 +65,27 @@ const Home = () => {
               {/* Posts with blur effect */}
               <div
                 style={{
-                  filter: isCommenting ? 'blur(5px)' :'none',
+                  filter: isCommenting || showForm ? 'blur(5px)' : 'none',
                   transition: 'filter 0.3s ease'
                 }}
               >
-                <Posts setShowForm={setShowForm} showForm={showForm} currentId={currentId} setCurrentId={setCurrentId} />
+                <Posts getLocation={getLocation} setShowForm={setShowForm} showForm={showForm} currentId={currentId} setCurrentId={setCurrentId} />
               </div>
             </Grid>
           </Grid>
 
           {/* Overlay popup */}
-          {isCommenting ?  (
+          {isCommenting ? (
             <div
               ref={commentRef}
+              id="posts"
               style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: 'rgba(0,0,0,0.3)',
+                // backgroundColor: 'rgba(0,0,0,0.3)',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -80,17 +93,13 @@ const Home = () => {
               }}
             >
               <div style={{
-                background: '#fff',
-                padding: '20px',
-                borderRadius: '10px',
                 maxWidth: '600px',
                 width: '90%',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-              }}>   
-                <CommentBar /> 
+              }}>
+                <CommentBar />
               </div>
             </div>
-            ) :  showForm && <div
+          ) : showForm && <div
             ref={commentRef}
             style={{
               position: 'absolute',
@@ -98,7 +107,6 @@ const Home = () => {
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundColor: 'rgba(0,0,0,0.3)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -106,20 +114,14 @@ const Home = () => {
             }}
           >
             <div style={{
-              background: '#fff',
-              padding: '20px',
-              borderRadius: '10px',
-              maxWidth: '600px',
-              width: '90%',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-            }}>   
-              <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} setShowForm={setShowForm} showForm={showForm}/> 
+            }}>
+              <Form currentId={currentId} setCurrentId={setCurrentId} getPost={getPost} setShowForm={setShowForm} showForm={showForm} />
             </div>
           </div>}
         </Container>
       </Grow>
 
-      <NavBottom setShowForm ={setShowForm} showForm={showForm} />
+      <NavBottom setShowForm={setShowForm} showForm={showForm} />
     </>
   )
 }

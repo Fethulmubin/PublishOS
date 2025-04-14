@@ -8,7 +8,7 @@ import moment from "moment";
 
 
 
-export default function CommentBar() {
+export default function CommentBar({getLocation}) {
   const [comment, setComment] = useState('');
 
   const dispatch = useDispatch()
