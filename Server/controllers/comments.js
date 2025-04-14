@@ -4,28 +4,34 @@ import Comment from "../models/comments.js";
 import postMessage from "../models/postMessage.js";
 import userModel from "../models/users.js";
 
+
+
+
+
+// completion.then((result) => console.log(result.choices[0].message));
+
 //get comments for a post
 export const getComments = async (req, res) => {
-    const {postId} = req.params;
+    const { postId } = req.params;
     const id = req.userId;
-    if(!mongoose.Types.ObjectId.isValid(postId)){
-        return res.status(404).json({success: false , message:"no post with this id"})
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+        return res.status(404).json({ success: false, message: "no post with this id" })
     }
-    if(!id){
-        return res.status(404).json({success : false , message: "Please login to see the comments"})
+    if (!id) {
+        return res.status(404).json({ success: false, message: "Please login to see the comments" })
     }
     try {
         const comments = await Comment.find({ postId: postId }).populate('userId', 'name');
-        res.status(200).json({success: true , message:"Comments fetched successfully", comments: comments});
+        res.status(200).json({ success: true, message: "Comments fetched successfully", comments: comments });
     } catch (error) {
-        res.status(500).json({success: false , message:"something went wrong"})
+        res.status(500).json({ success: false, message: "something went wrong" })
     }
 
 }
 // add comment to a post
 export const addComment = async (req, res) => {
 
-    const {postId} = req.params;
+    const { postId } = req.params;
     const comment = req.body.comment;
     const id = req.userId;
     // console.log(id)
@@ -43,17 +49,34 @@ export const addComment = async (req, res) => {
             comment: comment,
         });
         const savedComment = await newComment.save();
-        const updatedPost  = await postMessage.findByIdAndUpdate(
+        const updatedPost = await postMessage.findByIdAndUpdate(
             postId,
             { $push: { comments: savedComment._id } }
         );
-        res.status(200).json({success: true , message:"Comment added successfully", comment: savedComment});
+        res.status(200).json({ success: true, message: "Comment added successfully", comment: savedComment });
     } catch (error) {
 
-        res.status(500).json({success: false , message:"something went wrong", error: error.message});
+        res.status(500).json({ success: false, message: "something went wrong", error: error.message });
     }
-   
 
+
+}
+//open ai comment recoommendation
+export const getCommentRecommendation = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.userId;
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+        return res.status(404).json({ success: false, message: "No post with this id" });
+    }
+    if (!userId) {
+        return res.status(404).json({ success: false, message: "Please login to see the comments" });
+    }
+    try {
+        const post = await postMessage.findOne({ _id: postId }).select('title message tags')   
+        res.status(200).json({ success: true, message: "Comments fetched successfully", post: post});
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Something went wrong" , error: error});
+    }
 }
 
 // update comment from a post
@@ -66,7 +89,7 @@ export const updateComment = async (req, res) => {
     }
     try {
         const commentToUpdate = await Comment.findById(id);
-        if(userId !== commentToUpdate.userId.toString()){
+        if (userId !== commentToUpdate.userId.toString()) {
             return res.status(401).json({ success: false, message: "You can only update your own comments" });
         }
         const updatedComment = await Comment.findByIdAndUpdate(
@@ -102,6 +125,6 @@ export const deleteComment = async (req, res) => {
         );
         res.status(200).json({ success: true, message: "Comment deleted successfully" });
     } catch (error) {
-        
+
     }
 }
