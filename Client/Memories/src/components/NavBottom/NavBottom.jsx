@@ -18,7 +18,9 @@ const NavBottom = ({showForm, setShowForm}) => {
       </div>
       <div 
         className={`nav-item ${activeTab === 'network' ? 'active' : ''}`}
-        onClick={() => setShowForm(!showForm)}
+        onClick={() => {setShowForm(!showForm)
+        }
+        }
       >
         <AddIcon style={{ color: '#74a1e8', fontSize: '30px' }}/>
         <span className="nav-text">post</span>

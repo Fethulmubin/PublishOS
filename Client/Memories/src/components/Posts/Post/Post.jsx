@@ -17,7 +17,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 
-function Post({ post, setCurrentId, currentId, showForm, setShowForm, getLocation = () => {} }) {
+function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
 
 
   const user = useSelector((state) => state?.auth.authData);
@@ -84,7 +84,6 @@ function Post({ post, setCurrentId, currentId, showForm, setShowForm, getLocatio
             </Button>
             <Button style={{ color: 'blue' }} size='small' onClick={() => {
               searchParams.get('id') ? setSearchParams({}) : setSearchParams({ id: post._id } )
-                getLocation(event)
             }}>
               <CommentIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
             </Button>

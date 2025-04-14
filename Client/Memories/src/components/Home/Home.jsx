@@ -29,15 +29,6 @@ const Home = () => {
     dispatch(getPost());
   }, [dispatch]);
 
-  const getLocation = (e) => {
-    // const x = e.clientX;
-    // const y = e.clientY;
-    setX(e.clientX);
-    setY(e.clientY);
-    // console.log(x, y)
-    window.scrollTo(x, y);
-    // console.log(`Clicked at: X=${x}, Y=${y}`);
-  }
 
   // Handle outside click
   useEffect(() => {
@@ -56,6 +47,14 @@ const Home = () => {
   }, [isCommenting, setSearchParams,]);
 
 
+    useEffect(() => {
+      if ( showForm || commentRef.current) {
+        commentRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, [isCommenting, showForm]);
+
+
+
   return (
     <>
       <Grow in>
@@ -69,7 +68,7 @@ const Home = () => {
                   transition: 'filter 0.3s ease'
                 }}
               >
-                <Posts getLocation={getLocation} setShowForm={setShowForm} showForm={showForm} currentId={currentId} setCurrentId={setCurrentId} />
+                <Posts  setShowForm={setShowForm} showForm={showForm} currentId={currentId} setCurrentId={setCurrentId} />
               </div>
             </Grid>
           </Grid>
@@ -85,7 +84,6 @@ const Home = () => {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                // backgroundColor: 'rgba(0,0,0,0.3)',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
