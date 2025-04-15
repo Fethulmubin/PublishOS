@@ -43,7 +43,7 @@ const Navbar = () => {
                 }}
             >
                 <StyledTypography className={Styles.heading} component={Link} to='/' variant='h3' align='center'>
-                    <img className={Styles.image} src={memories} alt="memories" width={300} />
+                    <img className='nav-image' src={memories} alt="memories" width={300} />
                 </StyledTypography>
 
             </div>
