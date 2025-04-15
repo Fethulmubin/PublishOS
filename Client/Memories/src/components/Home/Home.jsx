@@ -15,10 +15,7 @@ const Home = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  // const [x, setX] = useState(0);
-  // const [y, setY] = useState(0);
-  // console.log(showForm)
-  // setShowForm(false)
+
   var isCommenting = Boolean(searchParams.get('id'));
   const commentRef = useRef();
 
@@ -82,7 +79,7 @@ const Home = () => {
                 top: 0,
                 left: 0,
                 width: '100%',
-                height: '100%',
+                height: '60%',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -103,7 +100,7 @@ const Home = () => {
               top: 0,
               left: 0,
               width: '100%',
-              height: '100%',
+              height: '60%',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
