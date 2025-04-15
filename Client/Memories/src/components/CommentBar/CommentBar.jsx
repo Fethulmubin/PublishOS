@@ -10,7 +10,7 @@ import moment from "moment";
 
 export default function CommentBar({getLocation}) {
   const [comment, setComment] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const comments = useSelector((state) => state.commentsReducer);
@@ -35,8 +35,15 @@ export default function CommentBar({getLocation}) {
     }
   };
   const fetchComments = () => {
-
-    dispatch(getcomment(searchParams.get('id')))
+    setLoading(true);
+    dispatch(getcomment(searchParams.get('id'))).then(() =>{
+      setLoading(false);
+    })
+      // dispatch(updatePost(currentId, postData)).then(() => {
+           
+      //       setShouldRerender(true);
+      //       clear();
+      //     });
 
   }
 
@@ -83,30 +90,34 @@ export default function CommentBar({getLocation}) {
           ↑
         </button>
       </div>
-        {fetchedComments?.length === 0 ? (
+        {loading ? (
           <div className="no-comments">
-            <CommentLoad/>
+            <CommentLoad/> 
           </div>
         ) : (
           <div className="comment-feed">
-            {fetchedComments?.map((item, index) => (
-              <div className={item?.userId?.name ===  user?.result?.name ? 'comment-right' : 'comment-item'} key={index}>
-                <div className="avatar" style={{ backgroundColor: bgColor }}>
-                  {item?.userId?.name.charAt(0).toUpperCase()}
-                </div>
-                <div className='comment-content'>
-                  <div className='comment-name'>{item?.userId?.name  ===  user?.result?.name ? 'You' : item.userId?.name}
-                      { item?.userId?.name  ===  user?.result?.name && <div className="dot"></div>}
+            {fetchedComments?.length === 0 ? (
+              <div className="no-comments-message">No comments yet. Be the first to comment!</div>
+            ) : (
+              fetchedComments?.map((item, index) => (
+                <div className={item?.userId?.name ===  user?.result?.name ? 'comment-right' : 'comment-item'} key={index}>
+                  <div className="avatar" style={{ backgroundColor: bgColor }}>
+                    {item?.userId?.name.charAt(0).toUpperCase()}
                   </div>
-                  <div className="comment-text">
-                    {item?.comment} 
+                  <div className='comment-content'>
+                    <div className='comment-name'>{item?.userId?.name  ===  user?.result?.name ? 'You' : item.userId?.name}
+                        { item?.userId?.name  ===  user?.result?.name && <div className="dot"></div>}
+                    </div>
+                    <div className="comment-text">
+                      {item?.comment} 
+                    </div>
+                    <span className="comment-date">
+                        {moment(item?.createdAt).fromNow()}
+                      </span>
                   </div>
-                  <span className="comment-date">
-                      {moment(item?.createdAt).fromNow()}
-                    </span>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
     </div>

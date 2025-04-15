@@ -108,6 +108,14 @@
   margin-top: 20px;
   font-family: 'Courier New', Courier, monospace;
 }
+.no-comments-message{
+  text-align: center;
+  font-size: 20px;
+  color: #999;
+  font-weight: bold;
+  margin-top: 20px;
+  font-family: 'Courier New', Courier, monospace;
+}
 .comment-date{
   font-size: 12px;
   color: #666;
