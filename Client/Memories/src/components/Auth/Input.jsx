@@ -8,7 +8,7 @@ const Input = ({ name, label, type, handleChange, handleShowPassword, autoFocus,
       <TextField
         name={name}
         label={label}
-        variant='outlined'
+        variant="outlined"
         type={type}
         value={value}
         autoFocus={autoFocus}
@@ -16,18 +16,22 @@ const Input = ({ name, label, type, handleChange, handleShowPassword, autoFocus,
         onChange={handleChange}
         fullWidth
         autoComplete={autoComplete || 'off'}
-        InputProps={name === 'password' ? {
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={handleShowPassword}>
-                {type === 'password' ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          )
-        } : null}
+        InputProps={
+          name === 'password'
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      {type === 'password' ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : null
+        }
       />
     </Grid>
-  )
-}
+  );
+};
 
 export default Input

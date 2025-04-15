@@ -9,6 +9,8 @@ import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { signin, signup } from '../../actions/auth'
+import CircularProgress from '@mui/material/CircularProgress';
+import './Auth.css'
 
 const initialState = {
     firstName: "",
@@ -20,7 +22,15 @@ const initialState = {
 
 const Auth = () => {
     const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState(initialState)
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    })
+    const [loading, setLoading] = useState(false)
+
     const [isSignup, setIsSignup] = useState(false);
     const [focusedField, setFocusedField] = useState(null);
     const StyledPaper = styled(Paper)(() => (Styles.paper))
@@ -31,11 +41,16 @@ const Auth = () => {
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
     const handleSubmit = (e) => {
         e.preventDefault();
-        isSignup ? dispatch(signup(formData, navigate)) : dispatch(signin(formData, navigate))
+        setLoading(true)
+        isSignup ? dispatch(signup(formData, navigate)).then(() => setLoading(false)) :
+            dispatch(signin(formData, navigate)).then(() => setLoading(false))
     }
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({ ...formData, [name]: value })
+        const { name, value } = e.target;
+        setFormData(formData => ({
+            ...formData,
+            [name]: value
+        }))
         setFocusedField(name)
     }
 
@@ -71,33 +86,77 @@ const Auth = () => {
         console.log(err);
     }
     return (
-        <Container component='main' maxWidth='xs'>
-            <StyledPaper elevation={3}>
-                <Avatar className={Styles.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography variant='h5'>{isSignup ? 'Sign Up' : 'Sign In'}</Typography>
-                <form autoComplete="off" className={Styles.form} onSubmit={handleSubmit}>
-                    <Grid container spacing={2} style={{ marginBottom: '16px' }}>
-                        {isSignup ? (
-                            <>
-                                <Input name='firstName' label='First Name' type='text' value={formData.firstName} handleChange={handleChange} autoFocus={focusedField === 'firstName' || focusedField === null} half  />
-                                <Input name='lastName' label='Last Name'  type='text' value={formData.lastName} handleChange={handleChange}  autoFocus={focusedField === 'lastName'} half />
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} type='email'  autoFocus={focusedField === 'email'} fullWidth />
-                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange} type={showPassword ? 'text' : 'password'}  autoFocus={focusedField === 'password'} handleShowPassword={handleShowPassword} fullWidth  />
-                                <Input name='confirmPassword' label='Repeat Password' value={formData.confirmPassword} handleChange={handleChange} type='password'  autoFocus={focusedField === 'confirmPassword'} fullWidth  />
-                            </>
+        <div className="container">
+            <div className="avatar">🔒</div>
+            <h2>{isSignup ? 'Sign Up' : 'Sign In'}</h2>
 
-                        ) : (
-                            <>
-                                <Input name='email' label='Email Address' value={formData.email} handleChange={handleChange} autoFocus={focusedField === 'email' || focusedField === null} type='email' fullWidth />
-                                <Input name='password' label='Password' value={formData.password} handleChange={handleChange}  autoFocus={focusedField === 'password'} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} fullWidth  />
-                            </>
-                        )}
-                    </Grid>
-                    <Button type='submit' fullWidth variant='contained' color='primary' className={Styles.submit}>
+            {loading ? (
+                <CircularProgress className="loading" />
+            ) : (
+                <form onSubmit={handleSubmit}>
+                    {isSignup && (
+                        <>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    placeholder="First Name"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    placeholder="Last Name"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    <div className="form-group">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email Address"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    {isSignup && (
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                placeholder="Repeat Password"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    )}
+                    <button type="submit">
                         {isSignup ? 'Sign Up' : 'Sign In'}
-                    </Button>
+                    </button>
+
                     <GoogleLogin
                         render={renderProps => (
                             <Button variant='contained' className={Styles.googleButton} color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
@@ -108,12 +167,15 @@ const Auth = () => {
                         onFailure={googleFailure}
                         cookiePolicy='single_host_origin'
                     />
-                    <Grid container justify='flex end'>
-                        <Button onClick={switchMode}>{isSignup ? 'Already have an account ? Sign In' : "Don't you have an account ? Sign Up "}</Button>
-                    </Grid>
+
+                    <button type="button" className="switch-btn" onClick={switchMode}>
+                        {isSignup
+                            ? 'Already have an account? Sign In'
+                            : "Don't you have an account? Sign Up"}
+                    </button>
                 </form>
-            </StyledPaper>
-        </Container>
+            )}
+        </div>
     )
 }
 

@@ -26,8 +26,10 @@ export default function CommentBar({setSearchParams}) {
 
   const handleAddComment = () => {
     if (comment.trim()) {
+      setLoading(true);
       dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
         fetchComments(); // Fetch updated comments after adding a new one
+        setLoading(false);
         setComment(""); // clear field
       });
 
