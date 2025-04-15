@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./commentBar.css";
 import { addcomment, getcomment } from '../../actions/comments'
 import { useDispatch, useSelector } from "react-redux";
@@ -8,13 +8,14 @@ import moment from "moment";
 
 
 
-export default function CommentBar({getLocation}) {
+export default function CommentBar({setSearchParams}) {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const comments = useSelector((state) => state.commentsReducer);
   const user = useSelector((state => state?.auth?.authData));
+  const commentRef = useRef()
 
 
   useEffect(() => {
@@ -39,11 +40,6 @@ export default function CommentBar({getLocation}) {
     dispatch(getcomment(searchParams.get('id'))).then(() =>{
       setLoading(false);
     })
-      // dispatch(updatePost(currentId, postData)).then(() => {
-           
-      //       setShouldRerender(true);
-      //       clear();
-      //     });
 
   }
 
@@ -69,15 +65,29 @@ export default function CommentBar({getLocation}) {
 
   useEffect(() => {
     if (searchParams.get('id')) {
-      // setLoading(true);
+
       dispatch(clearComments());
       fetchComments();
-      // setLoading(false);
     }
   }, [searchParams.get('id')]);
 
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if ( commentRef.current && !commentRef.current.contains(e.target)) {
+          const postsDiv = document.getElementById('posts');
+          if (postsDiv && postsDiv.contains(e.target)) {
+            return; // Do nothing if clicking inside the posts div
+          }
+          setSearchParams({})
+          // Hide the form when clicking outside
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
   return (
-    <div className="comment-wrapper">
+    <div ref={commentRef} className="comment-wrapper">
       <input
         type="text"
         placeholder="Write a comment..."

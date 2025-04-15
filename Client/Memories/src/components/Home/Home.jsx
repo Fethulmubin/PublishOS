@@ -24,23 +24,6 @@ const Home = () => {
   }, [dispatch]);
 
 
-  // Handle outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (isCommenting && commentRef.current && !commentRef.current.contains(e.target)) {
-        const postsDiv = document.getElementById('posts');
-        if (postsDiv && postsDiv.contains(e.target)) {
-          return; // Do nothing if clicking inside the posts div
-        }
-        setSearchParams({})
-        // Hide the form when clicking outside
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isCommenting, setSearchParams,]);
-
-
     useEffect(() => {
       if ( showForm || commentRef.current) {
         commentRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -71,7 +54,6 @@ const Home = () => {
           {isCommenting ? (
             <div
               ref={commentRef}
-              id="posts"
               style={{
                 position: 'absolute',
                 top: 0,
@@ -88,7 +70,7 @@ const Home = () => {
                 maxWidth: '600px',
                 width: '90%',
               }}>
-                <CommentBar />
+                <CommentBar setSearchParams={setSearchParams} />
               </div>
             </div>
           ) : showForm && <div
