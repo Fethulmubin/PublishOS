@@ -5,7 +5,6 @@ import { Container, AppBar, Typography, Grow, Grid } from '@mui/material'
 import Posts from '../Posts/Posts'
 import Form from '../Form/Form'
 import { getPost } from '../../actions/posts'
-// import { styled } from "@mui/system";
 import { useSearchParams } from 'react-router-dom'
 import CommentBar from '../CommentBar/CommentBar'
 import NavBottom from '../NavBottom/NavBottom'
@@ -16,8 +15,8 @@ const Home = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
+  // const [x, setX] = useState(0);
+  // const [y, setY] = useState(0);
   // console.log(showForm)
   // setShowForm(false)
   var isCommenting = Boolean(searchParams.get('id'));

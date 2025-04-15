@@ -23,7 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
 
 
-  const user = useSelector((state) => state?.auth.authData);
+  const user = useSelector((state) => state?.auth?.authData);
   // console.log(user)
   const [searchParams, setSearchParams] = useSearchParams();
   const [showPopup, setShowPopup] = useState(false)
@@ -72,13 +72,6 @@ function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
           }
           {post.likes.length}
         </Button>
-        {/* {user?.result?._id === post.posterId &&
-          <Button size='small' style={{ color: '#e36c27' }} onClick={() => {
-            dispatch(deletePost(post._id))
-          }}>
-            <DeleteIcon style={{ color: '#e36c27' }} fontSize='small' />
-          </Button>
-        } */}
         {user?.result?._id === post.posterId && (
           <div className="option-info-container" >
              {/* {
@@ -92,6 +85,7 @@ function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
                  <div className="option-popup">
                  <Button size='small' style={{ color: '#e36c27' }} onClick={() => {
                    dispatch(deletePost(post._id))
+                    setShowPopup(false)
                  }}>
                    <DeleteIcon style={{ color: '#e36c27' }} fontSize='small' />
                    Delete
@@ -100,6 +94,7 @@ function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
                  <Button style={{ color: 'blue' }} size='small' onClick={() => {
                    setCurrentId(post._id)
                    setShowForm(!showForm)
+                   setShowPopup(false)
                    // window.scrollTo(0, 0);
                  }}>
                    <EditIcon style={{ color: '#74a1e8', fontSize: '20px' }} />

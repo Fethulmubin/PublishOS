@@ -79,6 +79,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
       selectedFile: "",
     })
     setCurrentId(null);
+    setShowForm(false);
   };
   return (
     <>

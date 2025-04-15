@@ -1,15 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Post from './Post/Post'
 import { useSelector } from 'react-redux'
 import {Grid, CircularProgress} from '@mui/material'
 import {styled} from '@mui/system'
 import LoadingSkeleton from '../LoadingSkeleton/LoadingSkeleton'
 import { StyledGrid } from './styles';
+import { getPost } from '../../actions/posts'
+import { useDispatch } from 'react-redux'
 
 
 function Posts({setCurrentId,  showForm, setShowForm}) {
+  const dispatch = useDispatch()
   const posts = useSelector((state)=> state.posts)
-
+  useEffect(()=>{
+    if(!showForm){
+      dispatch(getPost())
+    }
+  }, [showForm])
   return(
     !posts.length? <LoadingSkeleton cards={4}/>:
     <StyledGrid  container alignItems = "stretch" spacing = {3}>
