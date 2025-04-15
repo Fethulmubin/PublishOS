@@ -6,7 +6,9 @@ import { TextField, Button, Typography, Paper } from "@mui/material";
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
+
 import { StyledPaper, StyledButton, StyledTextField, Styles } from './styles';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -22,7 +24,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
     selectedFile: "",
   });
   const [shouldRerender, setShouldRerender] = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (post) setPostData(post)
     // dispatch(getPost())
@@ -57,17 +59,21 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId) {
-      dispatch(updatePost(currentId, postData));
-      // window.location.reload();
-      setShouldRerender(true)
-      // setPostData(post)
-      clear();
+      setLoading(true)
+      dispatch(updatePost(currentId, postData)).then(() => {
+        setLoading(false);
+        setShouldRerender(true);
+        clear();
+      });
 
 
     }
     else {
-      dispatch(createPost(postData));
-      clear();
+      setLoading(!loading)
+      dispatch(createPost(postData)).then(() => {
+        setLoading(false);
+        clear();
+      });
     }
   };
   const clear = () => {
@@ -83,7 +89,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
   };
   return (
     <>
-      {user ? <StyledPaper>
+     { loading ? <CircularProgress/> : user ? <StyledPaper>
         <form
           autoComplete="off"
           onSubmit={handleSubmit}
@@ -183,7 +189,6 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
           Please Sign In to create your own memories and like other's memories.
         </Typography>
       </Paper>}
-
     </>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Styles } from './Styles'
 import { useDispatch } from 'react-redux'
-import { Container, AppBar, Typography, Grow, Grid } from '@mui/material'
+import { Container, Grow, Grid } from '@mui/material'
 import Posts from '../Posts/Posts'
 import Form from '../Form/Form'
 import { getPost } from '../../actions/posts'
@@ -12,7 +11,6 @@ import NavBottom from '../NavBottom/NavBottom'
 
 const Home = () => {
   const [currentId, setCurrentId] = useState(null)
-  const [isSignup, setIsSignup] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
