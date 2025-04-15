@@ -77,10 +77,10 @@ const Home = () => {
                 top: 0,
                 left: 0,
                 width: '100%',
-                height: '60%',
+                height: '100%',
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
+                // alignItems: 'center',
                 zIndex: 1000,
               }}
             >
@@ -98,10 +98,10 @@ const Home = () => {
               top: 0,
               left: 0,
               width: '100%',
-              height: '60%',
+              height: '100%',
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
+              // alignItems: 'center',
               zIndex: 1000,
             }}
           >
