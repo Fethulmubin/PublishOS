@@ -5,10 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CommentLoad from "../LoadingSkeleton/CommentLoad";
 import moment from "moment";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
-export default function CommentBar({setSearchParams}) {
+export default function CommentBar({ setSearchParams }) {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch()
@@ -24,22 +26,46 @@ export default function CommentBar({setSearchParams}) {
     }
   }, [searchParams.get('id')]);
 
-  const handleAddComment = () => {
-    if (comment.trim()) {
-      setLoading(true);
-      dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
-        fetchComments(); // Fetch updated comments after adding a new one
-        setLoading(false);
-        setComment(""); // clear field
-      });
+  // const handleAddComment = () => {
+  //   if (comment.trim()) {
+  //     setLoading(true);
+  //     dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
+  //       setLoading(false);
+  //       fetchComments(); // Fetch updated comments after adding a new one
+  //       setComment("");
+  //     })
+  //    // clear field
 
-    } else {
-      console.log("Input was empty, not submitting");
+
+  //   } else {
+  //     console.log("Input was empty, not submitting");
+  //   }
+  // };
+  const handleAddComment = async () => {
+  
+    try {
+      if (comment.trim()) {
+        setLoading(true);
+        await dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
+          fetchComments();
+          setLoading(false); // Fetch updated comments after adding a new one
+          setComment("");
+        })
+        toast.success("Comment Added Successfully");
+      } else {
+        toast.error("Input is empty!");
+        clear();
+      }
+    } catch (error) {
+      console.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
   const fetchComments = () => {
     setLoading(true);
-    dispatch(getcomment(searchParams.get('id'))).then(() =>{
+    dispatch(getcomment(searchParams.get('id'))).then(() => {
       setLoading(false);
     })
 
@@ -49,7 +75,7 @@ export default function CommentBar({setSearchParams}) {
     type: "CLEAR_COMMENTS"
   });
 
-  const fetchedComments = comments?.comments || []
+  const fetchedComments = comments?.comments || [];
   // console.log(fetchedComments);
 
   const [bgColor, setBgColor] = useState('');
@@ -65,31 +91,32 @@ export default function CommentBar({setSearchParams}) {
     setBgColor(randomColor);
   }, []);
 
+  // useEffect(() => {
+  //   if (searchParams.get('id')) {
+
+  //     dispatch(clearComments());
+  //     fetchComments();
+  //   }
+  // }, [searchParams.get('id')]);
+
   useEffect(() => {
-    if (searchParams.get('id')) {
-
-      dispatch(clearComments());
-      fetchComments();
-    }
-  }, [searchParams.get('id')]);
-
-    useEffect(() => {
-      const handleClickOutside = (e) => {
-        if ( commentRef.current && !commentRef.current.contains(e.target)) {
-          const postsDiv = document.getElementById('posts');
-          if (postsDiv && postsDiv.contains(e.target)) {
-            return; // Do nothing if clicking inside the posts div
-          }
-          setSearchParams({})
-          // Hide the form when clicking outside
+    const handleClickOutside = (e) => {
+      if (commentRef.current && !commentRef.current.contains(e.target)) {
+        const postsDiv = document.getElementById('posts');
+        if (postsDiv && postsDiv.contains(e.target)) {
+          return; // Do nothing if clicking inside the posts div
         }
-      };
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+        setSearchParams({})
+        // Hide the form when clicking outside
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div ref={commentRef} className="comment-wrapper">
+      <ToastContainer position="top-right" autoClose={3000}/>
       <input
         type="text"
         placeholder="Write a comment..."
@@ -102,36 +129,36 @@ export default function CommentBar({setSearchParams}) {
           ↑
         </button>
       </div>
-        {loading ? (
-          <div className="no-comments">
-            <CommentLoad/> 
-          </div>
-        ) : (
-          <div className="comment-feed">
-            {fetchedComments?.length === 0 ? (
-              <div className="no-comments-message">No comments yet. Be the first to comment!</div>
-            ) : (
-              fetchedComments?.map((item, index) => (
-                <div className={item?.userId?.name ===  user?.result?.name ? 'comment-right' : 'comment-item'} key={index}>
-                  <div className="avatar" style={{ backgroundColor: bgColor }}>
-                    {item?.userId?.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div className='comment-content'>
-                    <div className='comment-name'>{item?.userId?.name  ===  user?.result?.name ? 'You' : item.userId?.name}
-                        { item?.userId?.name  ===  user?.result?.name && <div className="dot"></div>}
-                    </div>
-                    <div className="comment-text">
-                      {item?.comment} 
-                    </div>
-                    <span className="comment-date">
-                        {moment(item?.createdAt).fromNow()}
-                      </span>
-                  </div>
+      {loading ? (
+        <div className="no-comments">
+          <CommentLoad />
+        </div>
+      ) : (
+        <div className="comment-feed">
+          {fetchedComments?.length === 0 ? (
+            <div className="no-comments-message">No comments yet. Be the first to comment!</div>
+          ) : (
+            fetchedComments?.map((item, index) => (
+              <div className={item?.userId?.name === user?.result?.name ? 'comment-right' : 'comment-item'} key={index}>
+                <div className="avatar" style={{ backgroundColor: bgColor }}>
+                  {item?.userId?.name.charAt(0).toUpperCase()}
                 </div>
-              ))
-            )}
-          </div>
-        )}
+                <div className='comment-content'>
+                  <div className='comment-name'>{item?.userId?.name === user?.result?.name ? 'You' : item.userId?.name}
+                    {item?.userId?.name === user?.result?.name && <div className="dot"></div>}
+                  </div>
+                  <div className="comment-text">
+                    {item?.comment}
+                  </div>
+                  <span className="comment-date">
+                    {moment(item?.createdAt).fromNow()}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }

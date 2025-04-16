@@ -65,7 +65,7 @@ const Auth = () => {
         setFocusedField(name)
     }
 
-    console.log("formData", formData)
+    // console.log("formData", formData)
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
         setShowPassword(false);
@@ -81,8 +81,8 @@ const Auth = () => {
         // console.log(obj.name)
         const profileObj = res.credential ? JSON.parse(atob(res?.credential.split('.')[1])) : {};
         const Token = res?.credential;
-        console.log(profileObj);
-        console.log(Token)
+        // console.log(profileObj);
+        // console.log(Token)
         try {
             dispatch({ type: 'AUTH', data: { result: profileObj, token: Token } });
             navigate('/');

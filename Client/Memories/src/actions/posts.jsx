@@ -7,6 +7,7 @@ try {
     dispatch({type : 'FETCH_ALL', payload : data})
 } catch (error) {
     console.log(error.message)
+    throw error;
 }
 
     // const action = {type : 'FETCH_ALL', payload : []}
@@ -17,9 +18,9 @@ export const createPost = (post) => async(dispatch)=> {
 try {
     const {data} = await api.createPosts(post)
     dispatch({type : 'CREATE', payload : data})
-    console.log(data)
+    // console.log(data)
 } catch (error) {
-    console.log(error)
+    // console.log(error)
     throw error;
 }
 

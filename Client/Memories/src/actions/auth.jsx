@@ -19,7 +19,7 @@ export const signup = (formData, navigate ) => async(dispatch)=> {
         // console.log(data)    
         navigate('/')
     } catch (error) {
-        console.log(error.message)  
+        // console.log(error.message)  
         throw error;
     }
 }

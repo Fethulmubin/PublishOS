@@ -9,15 +9,17 @@ export const addcomment = (id, comment) => async(dispatch)=> {
 
     } catch (error) {
         console.log(error)
+        throw error;
     }
 }
 //getting comments
 export const getcomment = (id) => async(dispatch) => {
     try {
         const {data} = await api.getComments(id);
-        console.log(data)
+        // console.log(data)
         dispatch({type: 'FETCH_COMMENTS', payload: data})
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        throw error;
     }
 }
