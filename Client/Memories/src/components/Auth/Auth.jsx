@@ -97,17 +97,17 @@ const Auth = () => {
         console.log(err);
     }
     return (
-        <div className="container">
-            <div className="avatar"><LockOutlinedIcon /></div>
+        <div className="container-Auth">
+            <div className="avatar-Auth"><LockOutlinedIcon /></div>
             <h2>{isSignup ? 'Sign Up' : 'Sign In'}</h2>
 
             {loading ? (
-                <CircularProgress className="loading" />
+                <CircularProgress className="loading-Auth" />
             ) : (
                 <form onSubmit={handleSubmit}>
                     {isSignup && (
                         <>
-                            <div className="form-group">
+                            <div className="form-group-Auth">
                                 <input
                                     type="text"
                                     name="firstName"
@@ -117,7 +117,7 @@ const Auth = () => {
                                     required
                                 />
                             </div>
-                            <div className="form-group">
+                            <div className="form-group-Auth">
                                 <input
                                     type="text"
                                     name="lastName"
@@ -130,7 +130,7 @@ const Auth = () => {
                         </>
                     )}
 
-                    <div className="form-group">
+                    <div className="form-group-Auth">
                         <input
                             type="email"
                             name="email"
@@ -141,7 +141,7 @@ const Auth = () => {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group-Auth">
                         <input
                             type="password"
                             name="password"
@@ -153,7 +153,7 @@ const Auth = () => {
                     </div>
 
                     {isSignup && (
-                        <div className="form-group">
+                        <div className="form-group-Auth">
                             <input
                                 type="password"
                                 name="confirmPassword"
@@ -164,15 +164,15 @@ const Auth = () => {
                             />
                         </div>
                     )}
-                    <div className="form-group">
-                        <button type="submit" className="submit-btn">
+                    <div className="form-group-Auth">
+                        <button type="submit" className="submit-btn-Auth">
                             {isSignup ? 'Sign Up' : 'Sign In'}
                         </button>
                     </div>
 
                     <GoogleLogin
                         render={renderProps => (
-                            <button variant='contained' color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
+                            <button className='google-btn' variant='contained' color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
                                 Google Sign In
                             </button>
                         )}

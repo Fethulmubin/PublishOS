@@ -4,7 +4,8 @@ import Post from '../components/Posts/Post/Post'
 import React from 'react'
 
 
-const url = 'http://localhost:5555/'
+// const url = 'http://localhost:5555/'
+const url = 'https://memories-backend-8rsy.onrender.com/'
 
 const API = axios.create({ baseURL: url });
 
