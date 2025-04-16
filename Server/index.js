@@ -21,7 +21,6 @@ app.use('/users', user_routes);
 app.use('/comments', commentRouter);
 
 const PORT = process.env.PORT || 5555;
-// const CONNECTION_URL = "mongodb+srv://fetihul:AN8BqTMIYsH0V9oa@cluster0.80jdc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 // mongodb+srv://fetihul:<db_password>@cluster0.80jdc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
