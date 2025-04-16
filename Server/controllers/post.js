@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import postMessage from "../models/postMessage.js"
+import userModel from "../models/users.js";
 
 export const getPosts = async (req, res) => {
     try {
@@ -11,12 +12,9 @@ export const getPosts = async (req, res) => {
 
 }
 export const createPost = async (req, res) => {
-    const posterId = req.userId;
+    const posterId = req.userId;    
     const { title, message, creator, tags, selectedFile } = req.body;
-    // const transaction = await TransactionModel.create({name, description, date} )
-    // newPost is an object created from the postMessage model, and it represents a single document that will be saved to the MongoDB collection defined by the postMessage model.
-    // console.log(data)
-    // const newPost = new postMessage(data);
+
     try {
         // await newPost.save();
         const newPost = await postMessage.create({ title, message, creator, tags, selectedFile, posterId })

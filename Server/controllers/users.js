@@ -50,4 +50,17 @@ const signup = async (req, res) => {
    
 
 }
-export { signin, signup };
+
+const signupWithGoogleCheck = async(id, email, name, password) => {
+    try {
+        const user = await userModel.findOne({id: id});
+        if(!user) {
+            const newUser = await userModel.create({id: id, email: email, name: name, password: password});
+            return newUser._id;
+        }
+        return user._id;
+    } catch (error) {
+        console.error("Error checking Google user:", error);
+    }
+}
+export { signin, signup, signupWithGoogleCheck };

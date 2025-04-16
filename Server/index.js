@@ -5,6 +5,8 @@ import cors from 'cors';
 import post_routes from './routes/posts.js'; // we should add .js when we importing in nodejs not react
 import user_routes from './routes/users.js'
 import commentRouter from './routes/comments.js'; // Importing the comments route
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
@@ -19,10 +21,10 @@ app.use('/users', user_routes);
 app.use('/comments', commentRouter);
 
 const PORT = process.env.PORT || 5555;
-const CONNECTION_URL = "mongodb+srv://fetihul:AN8BqTMIYsH0V9oa@cluster0.80jdc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// const CONNECTION_URL = "mongodb+srv://fetihul:AN8BqTMIYsH0V9oa@cluster0.80jdc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Connect to MongoDB
 // mongodb+srv://fetihul:<db_password>@cluster0.80jdc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-mongoose.connect(CONNECTION_URL)
+mongoose.connect(process.env.CONNECTION_URL)
   .then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
   .catch((error) => console.error(error.message));
