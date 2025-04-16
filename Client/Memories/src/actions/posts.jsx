@@ -19,7 +19,7 @@ try {
     dispatch({type : 'CREATE', payload : data})
     console.log(data)
 } catch (error) {
-    console.log(error.message)
+    console.log(error)
     throw error;
 }
 

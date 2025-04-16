@@ -14,7 +14,6 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { useSelector } from 'react-redux';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-// import MoreVert from '@mui/icons-material/MoreVert'
 import './post.css'
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -38,6 +37,17 @@ function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
   const handleLike = () => {
     dispatch(likePost(post?._id))
   }
+
+  // const handleDelete = async (id) => {
+
+  //   try{
+  //     await dispatch(deletePost(id))
+  //     toast.success("Post deleted successfully")
+  //   }
+  //   catch{
+  //      toast.error(error?.response?.data?.message || "Something went wrong!");
+  //   }
+  // }
   return (
 
     <StyledCard style={{ marginBottom: '10px' }}>
