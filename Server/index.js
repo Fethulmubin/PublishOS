@@ -23,7 +23,6 @@ app.use('/comments', commentRouter);
 const PORT = process.env.PORT || 5555;
 
 // Connect to MongoDB
-// mongodb+srv://fetihul:<db_password>@cluster0.80jdc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 mongoose.connect(process.env.CONNECTION_URL)
   .then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
   .catch((error) => console.error(error.message));
