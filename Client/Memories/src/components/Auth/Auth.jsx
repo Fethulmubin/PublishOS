@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Container, Typography, Grid, Paper, Avatar, Button, TextField } from '@mui/material'
 import { styled } from "@mui/system";
-import { Styles } from './styles'
+// import { Styles } from './styles'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Icon from './Icon';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Input from './Input';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
@@ -32,18 +33,28 @@ const Auth = () => {
     const [loading, setLoading] = useState(false)
 
     const [isSignup, setIsSignup] = useState(false);
-    const [focusedField, setFocusedField] = useState(null);
-    const StyledPaper = styled(Paper)(() => (Styles.paper))
     // const isSignup = false;
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true)
-        isSignup ? dispatch(signup(formData, navigate)).then(() => setLoading(false)) :
-            dispatch(signin(formData, navigate)).then(() => setLoading(false))
+        setLoading(true);
+        try {
+            if (isSignup) {
+                await dispatch(signup(formData, navigate));
+                toast.success("successfully signed up")
+            } else {
+                await dispatch(signin(formData, navigate));
+                toast.success("successfully logged in")
+            }
+        } catch (error) {
+            console.error(error?.response?.data?.message);
+            toast.error(error?.response?.data?.message || "Something went wrong!");
+        } finally {
+            setLoading(false);
+        }
     }
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -87,7 +98,7 @@ const Auth = () => {
     }
     return (
         <div className="container">
-            <div className="avatar">🔒</div>
+            <div className="avatar"><LockOutlinedIcon /></div>
             <h2>{isSignup ? 'Sign Up' : 'Sign In'}</h2>
 
             {loading ? (
@@ -153,15 +164,17 @@ const Auth = () => {
                             />
                         </div>
                     )}
-                    <button type="submit">
-                        {isSignup ? 'Sign Up' : 'Sign In'}
-                    </button>
+                    <div className="form-group">
+                        <button type="submit" className="submit-btn">
+                            {isSignup ? 'Sign Up' : 'Sign In'}
+                        </button>
+                    </div>
 
                     <GoogleLogin
                         render={renderProps => (
-                            <Button variant='contained' className={Styles.googleButton} color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
+                            <button variant='contained' color='primary' fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} Variant='contained'>
                                 Google Sign In
-                            </Button>
+                            </button>
                         )}
                         onSuccess={googleSuccess}
                         onFailure={googleFailure}
@@ -175,7 +188,9 @@ const Auth = () => {
                     </button>
                 </form>
             )}
+               <ToastContainer position="top-center" autoClose={3000} />
         </div>
+        
     )
 }
 

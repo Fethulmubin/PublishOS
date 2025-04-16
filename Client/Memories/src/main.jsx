@@ -13,7 +13,7 @@ import './index.css'
 const store = createStore(
   reducers,
   persistedState,
-  compose(applyMiddleware(thunk))
+  compose(applyMiddleware(thunk)),
 );
 
 ReactDOM.createRoot(document.getElementById('root')).render(

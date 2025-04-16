@@ -8,6 +8,7 @@ export const signin = (formData, navigate) => async(dispatch)=> {
         navigate('/')
     } catch (error) {
         console.log(error.message)
+        throw error;
     }
 }
 
@@ -19,5 +20,6 @@ export const signup = (formData, navigate ) => async(dispatch)=> {
         navigate('/')
     } catch (error) {
         console.log(error.message)  
+        throw error;
     }
 }

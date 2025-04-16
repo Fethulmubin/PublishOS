@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 import { StyledPaper, StyledButton, StyledTextField, Styles } from './styles';
 import CircularProgress from '@mui/material/CircularProgress';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -54,24 +56,25 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (currentId) {
-      setLoading(true)
-      dispatch(updatePost(currentId, postData)).then(() => {
-        setLoading(false);
-        setShouldRerender(true);
+    setLoading(true);
+  
+    try {
+      if (currentId) {
+        await dispatch(updatePost(currentId, postData));
+        toast.success("Updated Successfully");
         clear();
-      });
-
-
-    }
-    else {
-      setLoading(!loading)
-      dispatch(createPost(postData)).then(() => {
-        setLoading(false);
+      } else {
+        await dispatch(createPost(postData));
+        toast.success("Posted Successfully");
         clear();
-      });
+      }
+    } catch (error) {
+      console.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
   const clear = () => {
@@ -83,10 +86,14 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
       selectedFile: "",
     })
     setCurrentId(null);
-    setShowForm(false);
+    setTimeout(() => {
+      setShowForm(false);
+    }, 3000);
+
   };
   return (
     <>
+   
      { loading ? <CircularProgress/> : user ? <StyledPaper>
         <form
           autoComplete="off"
@@ -187,6 +194,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
           Please Sign In to create your own memories and like other's memories.
         </Typography>
       </Paper>}
+      <ToastContainer position="top-right" autoClose={3000}/>
     </>
   );
 }
