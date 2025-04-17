@@ -76,18 +76,31 @@ export const likePost = async (req, res) => {
     }
 
     try {
-        const post = await postMessage.findById(_id);
-        const index = post.likes.findIndex((id) => id === String(req.userId));
+        // const post = await postMessage.findById(_id);
+        // const index = post.likes.findIndex((id) => id === String(req.userId));
 
-        if (index === -1) {
-            post.likes.push(req.userId);
-        } else {
-            post.likes = post.likes.filter((id) => id !== String(req.userId));
-        }
+        // if (index === -1) {
+        //     post.likes.push(req.userId);
+        // } else {
+        //     post.likes = post.likes.filter((id) => id !== String(req.userId));
+        // }
 
-        const updatedPost = await postMessage.findByIdAndUpdate(_id, { likes: post.likes }, { new: true });
+        // const updatedPost = await postMessage.findByIdAndUpdate(_id, { likes: post.likes }, { new: true });
 
-        res.status(200).json(updatedPost);
+        // res.status(200).json(updatedPost);
+            const post = await postMessage.findById(_id);
+        
+            const hasLiked = post.likes.includes(req.userId);
+        
+            const updatedPost = await postMessage.findByIdAndUpdate(
+                _id,
+                hasLiked
+                    ? { $pull: { likes: req.userId } }
+                    : { $addToSet: { likes: req.userId } },
+                { new: true }
+            );
+        
+            res.status(200).json(updatedPost);
     } catch (error) {
         console.error(error);
         res.status(500).send("Something went wrong, please check your internet");
