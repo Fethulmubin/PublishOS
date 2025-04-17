@@ -90,13 +90,13 @@ export const likePost = async (req, res) => {
         // res.status(200).json(updatedPost);
             const post = await postMessage.findById(_id);
         
-            const hasLiked = post.likes.includes(req.userId);
+            const hasLiked = post.likes.includes(id);
         
             const updatedPost = await postMessage.findByIdAndUpdate(
                 _id,
                 hasLiked
-                    ? { $pull: { likes: req.userId } }
-                    : { $addToSet: { likes: req.userId } },
+                    ? { $pull: { likes: id } }
+                    : { $addToSet: { likes: id } },
                 { new: true }
             );
         
