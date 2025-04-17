@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react'
+
 import { Container } from '@mui/material'
-import { styled } from "@mui/system";
-import { Styles } from './styles'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Navbar from './components/NavBar/Navbar'
 import Home from './components/Home/Home'
@@ -10,7 +8,6 @@ import { SkeletonTheme } from 'react-loading-skeleton'
 
 
 function App() {
-  // const classes = styled();
   return (
     <SkeletonTheme baseColor="rgba(224, 224, 224, 0.5)" highlightColor="rgba(251, 232, 232, 0.5)">
       <BrowserRouter>

@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function CommentBar({ setSearchParams }) {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
+  const [commentsLoad, setCommentsLoad] = useState(false)
   const dispatch = useDispatch()
   const [searchParams] = useSearchParams();
   const comments = useSelector((state) => state.commentsReducer);
@@ -26,30 +27,16 @@ export default function CommentBar({ setSearchParams }) {
     }
   }, [searchParams.get('id')]);
 
-  // const handleAddComment = () => {
-  //   if (comment.trim()) {
-  //     setLoading(true);
-  //     dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
-  //       setLoading(false);
-  //       fetchComments(); // Fetch updated comments after adding a new one
-  //       setComment("");
-  //     })
-  //    // clear field
-
-
-  //   } else {
-  //     console.log("Input was empty, not submitting");
-  //   }
-  // };
   const handleAddComment = async () => {
-  
+
     try {
       if (comment.trim()) {
         setLoading(true);
         await dispatch(addcomment(searchParams.get('id'), comment)).then(() => {
           fetchComments();
-          setLoading(false); // Fetch updated comments after adding a new one
+          // Fetch updated comments after adding a new one
           setComment("");
+          setLoading(false);
         })
         toast.success("Comment Added Successfully");
       } else {
@@ -59,21 +46,20 @@ export default function CommentBar({ setSearchParams }) {
     } catch (error) {
       console.error(error?.response?.data?.message);
       toast.error(error?.response?.data?.message || "Something went wrong!");
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };
   const fetchComments = () => {
-    setLoading(true);
+    // setLoading(true);
+    setCommentsLoad(true)
     dispatch(getcomment(searchParams.get('id'))).then(() => {
-      setLoading(false);
+      // setLoading(false);
+      setCommentsLoad(false)
     })
 
   }
-
-  const clearComments = () => ({
-    type: "CLEAR_COMMENTS"
-  });
 
   const fetchedComments = comments?.comments || [];
   // console.log(fetchedComments);
@@ -90,14 +76,6 @@ export default function CommentBar({ setSearchParams }) {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     setBgColor(randomColor);
   }, []);
-
-  // useEffect(() => {
-  //   if (searchParams.get('id')) {
-
-  //     dispatch(clearComments());
-  //     fetchComments();
-  //   }
-  // }, [searchParams.get('id')]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -116,7 +94,7 @@ export default function CommentBar({ setSearchParams }) {
 
   return (
     <div ref={commentRef} className="comment-wrapper">
-      <ToastContainer position="top-right" autoClose={3000}/>
+      <ToastContainer position="top-right" autoClose={3000} />
       <input
         type="text"
         placeholder="Write a comment..."
@@ -129,13 +107,13 @@ export default function CommentBar({ setSearchParams }) {
           ↑
         </button>
       </div>
-      {loading ? (
+      {loading || commentsLoad ? (
         <div className="no-comments">
           <CommentLoad />
         </div>
       ) : (
         <div className="comment-feed">
-          {fetchedComments?.length === 0 ? (
+          {fetchedComments.length === 0 ? (
             <div className="no-comments-message">No comments yet. Be the first to comment!</div>
           ) : (
             fetchedComments?.map((item, index) => (
