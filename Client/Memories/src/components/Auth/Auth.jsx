@@ -62,7 +62,6 @@ const Auth = () => {
             ...formData,
             [name]: value
         }))
-        setFocusedField(name)
     }
 
     // console.log("formData", formData)
@@ -70,7 +69,6 @@ const Auth = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
         setShowPassword(false);
         setFormData(initialState);
-        setFocusedField(null)
 
     }
     const googleSuccess = async (res) => {
