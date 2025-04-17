@@ -76,18 +76,6 @@ export const likePost = async (req, res) => {
     }
 
     try {
-        // const post = await postMessage.findById(_id);
-        // const index = post.likes.findIndex((id) => id === String(req.userId));
-
-        // if (index === -1) {
-        //     post.likes.push(req.userId);
-        // } else {
-        //     post.likes = post.likes.filter((id) => id !== String(req.userId));
-        // }
-
-        // const updatedPost = await postMessage.findByIdAndUpdate(_id, { likes: post.likes }, { new: true });
-
-        // res.status(200).json(updatedPost);
             const post = await postMessage.findById(_id);
         
             const hasLiked = post.likes.includes(id);
