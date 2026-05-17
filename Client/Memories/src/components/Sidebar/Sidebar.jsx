@@ -1,0 +1,189 @@
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Avatar,
+  Divider,
+  Button,
+} from '@mui/material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import FeedIcon from '@mui/icons-material/RssFeed';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import memories from '../../assets/memories.png';
+
+const navItems = [
+  { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+  { label: 'Feed', icon: <FeedIcon />, path: '/' },
+  { label: 'AI Studio', icon: <AutoAwesomeIcon />, path: '/' },
+  { label: 'Schedule', icon: <CalendarMonthIcon />, path: '/' },
+  { label: 'Analytics', icon: <AnalyticsIcon />, path: '/' },
+  { label: 'Notifications', icon: <NotificationsIcon />, path: '/' },
+  { label: 'Profile', icon: <PersonIcon />, path: '/' },
+  { label: 'Settings', icon: <SettingsIcon />, path: '/' },
+];
+
+const Sidebar = ({ drawerWidth = 260 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state?.auth?.authData);
+
+  const isActive = (path) => location.pathname === path;
+
+  const logout = () => {
+    dispatch({ type: 'LOGOUT' });
+    navigate('/');
+  };
+
+  return (
+    <Box
+      sx={{
+        width: drawerWidth,
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#ffffff',
+        borderRight: '1px solid',
+        borderColor: 'rgba(0,0,0,0.06)',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        zIndex: 1200,
+      }}
+    >
+      <Box
+        sx={{
+          px: 2.5,
+          py: 2.5,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+        }}
+      >
+        <Box
+          component="img"
+          src={memories}
+          alt="Memories"
+          sx={{ height: 32, objectFit: 'contain' }}
+        />
+      </Box>
+
+      <Divider />
+
+      <Box sx={{ flex: 1, overflow: 'auto', px: 1.5, py: 1.5 }}>
+        <List sx={{ py: 0 }}>
+          {navItems.map((item) => (
+            <ListItem key={item.label} disablePadding sx={{ mb: 0.5 }}>
+              <ListItemButton
+                onClick={() => navigate(item.path)}
+                sx={{
+                  borderRadius: 2,
+                  py: 1.2,
+                  px: 1.5,
+                  backgroundColor: isActive(item.path) ? 'rgba(99, 102, 241, 0.08)' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: isActive(item.path)
+                      ? 'rgba(99, 102, 241, 0.12)'
+                      : 'rgba(0,0,0,0.04)',
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 36,
+                    color: isActive(item.path) ? '#6366f1' : '#64748b',
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: '0.875rem',
+                    fontWeight: isActive(item.path) ? 600 : 500,
+                    color: isActive(item.path) ? '#6366f1' : '#475569',
+                  }}
+                />
+                {item.label === 'Notifications' && (
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      backgroundColor: '#ef4444',
+                    }}
+                  />
+                )}
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+
+      <Divider />
+
+      <Box sx={{ px: 2, py: 2 }}>
+        {user ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+            <Avatar
+              src={user?.result?.imageURL}
+              sx={{ width: 36, height: 36, fontSize: '0.875rem', bgcolor: '#6366f1' }}
+            >
+              {user?.result?.name?.charAt(0)?.toUpperCase()}
+            </Avatar>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#1e293b' }}
+                noWrap
+              >
+                {user?.result?.name}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ fontSize: '0.75rem', color: '#94a3b8' }}
+                noWrap
+              >
+                Content Creator
+              </Typography>
+            </Box>
+          </Box>
+        ) : (
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={() => navigate('/auth')}
+            sx={{ mb: 1 }}
+          >
+            Sign In
+          </Button>
+        )}
+        {user && (
+          <Button
+            variant="text"
+            fullWidth
+            startIcon={<LogoutIcon sx={{ fontSize: 18 }} />}
+            onClick={logout}
+            sx={{ color: '#94a3b8', fontSize: '0.8125rem', justifyContent: 'flex-start', px: 1 }}
+          >
+            Logout
+          </Button>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+export default Sidebar;

@@ -1,132 +1,458 @@
-import React, { useState } from 'react'
-import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material'
+import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Box,
+  Typography,
+  IconButton,
+  Avatar,
+  Chip,
+  Button,
+  Divider,
+} from '@mui/material';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import CommentIcon from '@mui/icons-material/Comment';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { styled } from '@mui/system'
-import { Styles } from './styles'
-import moment from 'moment'
-import { useDispatch } from 'react-redux';
-import { deletePost, likePost } from '../../../actions/posts';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useParams, useSearchParams } from 'react-router-dom';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { useSelector } from 'react-redux';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import './post.css'
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
+import { deletePost, likePost } from '../../../actions/posts';
+import { useSearchParams } from 'react-router-dom';
 
+const creatorRoles = [
+  'Content Creator',
+  'Marketing Strategist',
+  'AI Researcher',
+  'Digital Storyteller',
+  'Brand Strategist',
+  'Community Manager',
+  'Creative Director',
+  'Social Media Manager',
+];
 
-
-function Post({ post, setCurrentId, currentId, showForm, setShowForm }) {
-
-
+function Post({ post, setCurrentId, showForm, setShowForm }) {
   const user = useSelector((state) => state?.auth?.authData);
-  // console.log(user)
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [showPopup, setShowPopup] = useState(false)
-
-
   const dispatch = useDispatch();
-  const StyledCard = styled(Card)(() => (Styles.card))
-  const StyledTypography = styled(Typography)(() => (Styles.title))
-  const StyledCardActions = styled(CardActions)(() => (Styles.cardActions))
-  const StyledCardMedia = styled(CardMedia)(() => (Styles.media))
+  const [, setSearchParams] = useSearchParams();
+  const [showMenu, setShowMenu] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const roleIndex = post?.creator?.length % creatorRoles.length;
+  const creatorRole = creatorRoles[roleIndex];
 
   const handleLike = () => {
-    dispatch(likePost(post?._id))
-  }
+    dispatch(likePost(post?._id));
+  };
 
-  // const handleDelete = async (id) => {
+  const handleDelete = () => {
+    dispatch(deletePost(post._id));
+    setShowMenu(false);
+  };
 
-  //   try{
-  //     await dispatch(deletePost(id))
-  //     toast.success("Post deleted successfully")
-  //   }
-  //   catch{
-  //      toast.error(error?.response?.data?.message || "Something went wrong!");
-  //   }
-  // }
+  const handleEdit = () => {
+    setCurrentId(post._id);
+    setShowForm(!showForm);
+    setShowMenu(false);
+  };
+
+  const handleComment = () => {
+    setSearchParams({ id: post._id });
+  };
+
   return (
+    <Card
+      sx={{
+        mb: 2.5,
+        overflow: 'visible',
+        borderRadius: 3,
+        border: '1px solid rgba(0,0,0,0.06)',
+        transition: 'box-shadow 0.2s ease',
+        '&:hover': {
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+        },
+      }}
+    >
+      {/* Author Section */}
+      <Box sx={{ px: 2.5, pt: 2.5, pb: 1.5, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Avatar
+          src={post?.selectedFile && !imgError ? undefined : undefined}
+          sx={{
+            width: 44,
+            height: 44,
+            bgcolor: '#6366f1',
+            fontSize: '1rem',
+            fontWeight: 700,
+            border: '2px solid #e8e8ff',
+          }}
+        >
+          {post?.creator?.charAt(0)?.toUpperCase()}
+        </Avatar>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 700, fontSize: '0.9375rem', color: '#0f172a' }}
+            >
+              {post?.creator}
+            </Typography>
+            <Chip
+              label="Creator"
+              size="small"
+              sx={{
+                height: 20,
+                fontSize: '0.625rem',
+                fontWeight: 700,
+                bgcolor: 'rgba(99, 102, 241, 0.1)',
+                color: '#6366f1',
+                border: 'none',
+                letterSpacing: '0.02em',
+              }}
+            />
+          </Box>
+          <Typography
+            variant="caption"
+            sx={{ color: '#64748b', fontSize: '0.75rem', display: 'block', mt: 0.2 }}
+          >
+            {creatorRole} · {moment(post?.createdAt).fromNow()}
+          </Typography>
+        </Box>
+        <Box sx={{ position: 'relative' }}>
+          <IconButton
+            size="small"
+            onClick={() => setShowMenu(!showMenu)}
+            sx={{ color: '#94a3b8' }}
+          >
+            <MoreHorizIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+          {showMenu && user?.result?._id === post?.posterId && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 36,
+                right: 0,
+                bgcolor: '#ffffff',
+                borderRadius: 2,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                border: '1px solid rgba(0,0,0,0.06)',
+                zIndex: 10,
+                minWidth: 140,
+                overflow: 'hidden',
+              }}
+            >
+              <Button
+                fullWidth
+                startIcon={<EditIcon sx={{ fontSize: 16 }} />}
+                onClick={handleEdit}
+                sx={{
+                  justifyContent: 'flex-start',
+                  px: 2,
+                  py: 1,
+                  color: '#475569',
+                  fontSize: '0.8125rem',
+                  borderRadius: 0,
+                  '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+                }}
+              >
+                Edit Post
+              </Button>
+              <Button
+                fullWidth
+                startIcon={<DeleteIcon sx={{ fontSize: 16 }} />}
+                onClick={handleDelete}
+                sx={{
+                  justifyContent: 'flex-start',
+                  px: 2,
+                  py: 1,
+                  color: '#ef4444',
+                  fontSize: '0.8125rem',
+                  borderRadius: 0,
+                  '&:hover': { bgcolor: 'rgba(239,68,68,0.06)' },
+                }}
+              >
+                Delete
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Box>
 
-    <StyledCard style={{ marginBottom: '10px' }}>
-      <StyledCardMedia image={post.selectedFile}
-        title={post.title} />
-      <div className={Styles.overlay}>
-        <StyledTypography variant='h6'>
-          {`Posted by ${post.creator}`}
-        </StyledTypography>
-        <StyledTypography variant='body2'>
-          {post.title}
-        </StyledTypography>
-        <StyledTypography variant='body2'>
-          {moment(post.createdAt).fromNow()}
-        </StyledTypography>
-      </div>
-      <div className={Styles.details}>
-        <StyledTypography variant='body2' color='textSecondary'>
-          {post.tags.map(tag => `#${tag} `)}
-        </StyledTypography>
-      </div>
-      <CardContent>
-        <StyledTypography variant='h5' gutterBottom>
-          {post.message}
-        </StyledTypography>
-      </CardContent>
-      <StyledCardActions>
-        <Button size='small' style={{ color: '#74a1e8' }} onClick={handleLike}>
-          {user && post.likes.includes(user?.result?._id)
-            ? <ThumbUpAltIcon style={{ color: '#74a1e8' }} fontSize='small' />
-            : <ThumbUpOffAltIcon style={{ color: '#74a1e8' }} fontSize='small' />
-          }
-          {post.likes.length}
-        </Button>
-        {user?.result?._id === post.posterId && (
-          <div className="option-info-container" >
-             {/* {
-              user?.result?._id === post.posterId && */}
-              <div className={Styles.overlay2} style={{ gap: '5px' }}>
-                <Button style={{ color: 'blue' }} size='small' onClick={() => setShowPopup(prev => !prev)}>
-                  <MoreVertIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
-                </Button>
-              </div>
-              {showPopup && (
-                 <div className="option-popup">
-                 <Button size='small' style={{ color: '#e36c27' }} onClick={() => {
-                   dispatch(deletePost(post._id))
-                    setShowPopup(false)
-                 }}>
-                   <DeleteIcon style={{ color: '#e36c27' }} fontSize='small' />
-                   Delete
-                 </Button>
-                 <hr />
-                 <Button style={{ color: 'blue' }} size='small' onClick={() => {
-                   setCurrentId(post._id)
-                   setShowForm(!showForm)
-                   setShowPopup(false)
-                   // window.scrollTo(0, 0);
-                 }}>
-                   <EditIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
-                   Update
-                 </Button>
-                 <div className="popup-arrow"></div>
-               </div>
-              )} 
-          </div>
+      {/* Tags */}
+      {post?.tags && post.tags.length > 0 && (
+        <Box sx={{ px: 2.5, pb: 0.5, display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+          {post.tags.map((tag) => (
+            <Chip
+              key={tag}
+              label={`#${tag}`}
+              size="small"
+              sx={{
+                height: 22,
+                fontSize: '0.6875rem',
+                fontWeight: 500,
+                bgcolor: 'rgba(99, 102, 241, 0.06)',
+                color: '#6366f1',
+                borderRadius: 1,
+              }}
+            />
+          ))}
+        </Box>
+      )}
+
+      {/* Content */}
+      <CardContent sx={{ px: 2.5, py: 1.5 }}>
+        {post?.title && (
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              fontSize: '1.05rem',
+              color: '#0f172a',
+              mb: 0.75,
+              lineHeight: 1.4,
+            }}
+          >
+            {post.title}
+          </Typography>
         )}
-        <Button style={{ color: 'blue' }} size='small' onClick={() => {
-          searchParams.get('id') ? setSearchParams({}) : setSearchParams({ id: post._id })
-        }}>
-          <CommentIcon style={{ color: '#74a1e8', fontSize: '20px' }} />
+        {post?.message && (
+          <Typography
+            variant="body1"
+            sx={{
+              color: '#334155',
+              fontSize: '0.9375rem',
+              lineHeight: 1.7,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {post.message}
+          </Typography>
+        )}
+      </CardContent>
+
+      {/* Media */}
+      {post?.selectedFile && (
+        <Box sx={{ px: 2.5, pb: 1.5 }}>
+          <Box
+            sx={{
+              borderRadius: 2.5,
+              overflow: 'hidden',
+              border: '1px solid rgba(0,0,0,0.04)',
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: 2.5,
+                boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+                pointerEvents: 'none',
+              },
+            }}
+          >
+            <CardMedia
+              component="img"
+              image={post.selectedFile}
+              alt={post.title || 'Post media'}
+              onError={() => setImgError(true)}
+              sx={{
+                width: '100%',
+                maxHeight: 480,
+                objectFit: 'cover',
+                display: imgError ? 'none' : 'block',
+              }}
+            />
+          </Box>
+        </Box>
+      )}
+
+      <Divider sx={{ mx: 2.5 }} />
+
+      {/* Engagement + AI Actions */}
+      <Box sx={{ px: 2.5, py: 1.5 }}>
+        {/* Like count */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
+          {post?.likes?.length > 0 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Box
+                sx={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  bgcolor: '#6366f1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <ThumbUpAltIcon sx={{ fontSize: 11, color: '#fff' }} />
+              </Box>
+              <Typography variant="caption" sx={{ color: '#64748b', fontWeight: 500 }}>
+                {post.likes.length}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+
+        {/* Action buttons */}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Button
+              size="small"
+              startIcon={
+                user && post?.likes?.includes(user?.result?._id) ? (
+                  <ThumbUpAltIcon sx={{ fontSize: 18, color: '#6366f1' }} />
+                ) : (
+                  <ThumbUpOffAltIcon sx={{ fontSize: 18 }} />
+                )
+              }
+              onClick={handleLike}
+              sx={{
+                color: user && post?.likes?.includes(user?.result?._id) ? '#6366f1' : '#64748b',
+                fontWeight: 500,
+                fontSize: '0.8125rem',
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 2,
+                '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+              }}
+            >
+              Like
+            </Button>
+            <Button
+              size="small"
+              startIcon={<ChatBubbleOutlineIcon sx={{ fontSize: 18 }} />}
+              onClick={handleComment}
+              sx={{
+                color: '#64748b',
+                fontWeight: 500,
+                fontSize: '0.8125rem',
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 2,
+                '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+              }}
+            >
+              Comment
+            </Button>
+            <Button
+              size="small"
+              startIcon={<ShareOutlinedIcon sx={{ fontSize: 18 }} />}
+              sx={{
+                color: '#64748b',
+                fontWeight: 500,
+                fontSize: '0.8125rem',
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 2,
+                '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+              }}
+            >
+              Share
+            </Button>
+            <IconButton size="small" sx={{ color: '#94a3b8' }}>
+              <BookmarkBorderIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* AI Creator Actions */}
+      <Box
+        sx={{
+          px: 2.5,
+          pb: 2,
+          display: 'flex',
+          gap: 1,
+          flexWrap: 'wrap',
+        }}
+      >
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<AutoAwesomeIcon sx={{ fontSize: 14 }} />}
+          sx={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            py: 0.6,
+            px: 1.5,
+            borderRadius: 2,
+            borderColor: 'rgba(99,102,241,0.2)',
+            color: '#6366f1',
+            '&:hover': {
+              borderColor: '#6366f1',
+              bgcolor: 'rgba(99,102,241,0.04)',
+            },
+          }}
+        >
+          Enhance with AI
         </Button>
-
-      </StyledCardActions>
-    </StyledCard>
-
-
-
-  )
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<ContentCopyIcon sx={{ fontSize: 14 }} />}
+          sx={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            py: 0.6,
+            px: 1.5,
+            borderRadius: 2,
+            borderColor: 'rgba(0,0,0,0.1)',
+            color: '#64748b',
+            '&:hover': { borderColor: '#94a3b8' },
+          }}
+        >
+          Repurpose
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<ScheduleIcon sx={{ fontSize: 14 }} />}
+          sx={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            py: 0.6,
+            px: 1.5,
+            borderRadius: 2,
+            borderColor: 'rgba(0,0,0,0.1)',
+            color: '#64748b',
+            '&:hover': { borderColor: '#94a3b8' },
+          }}
+        >
+          Schedule
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<LinkedInIcon sx={{ fontSize: 14 }} />}
+          sx={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            py: 0.6,
+            px: 1.5,
+            borderRadius: 2,
+            borderColor: 'rgba(0,0,0,0.1)',
+            color: '#64748b',
+            '&:hover': { borderColor: '#94a3b8' },
+          }}
+        >
+          Publish to LinkedIn
+        </Button>
+      </Box>
+    </Card>
+  );
 }
 
-export default Post
+export default Post;

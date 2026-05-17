@@ -1,201 +1,373 @@
-import React, { useState, useEffect, useRef } from "react";
-// import { useSelector } from "react-redux";
-import { styled } from "@mui/system";
-// import { Styles } from "./styles";
-import { TextField, Button, Typography, Paper } from "@mui/material";
+import { useState, useEffect, useRef } from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  Avatar,
+  Divider,
+  IconButton,
+  CircularProgress,
+} from '@mui/material';
 import FileBase from 'react-file-base64';
-import { useDispatch, useSelector } from "react-redux";
-import { createPost, updatePost } from "../../actions/posts";
-import { StyledPaper, StyledButton, StyledTextField, Styles } from './styles';
-import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost, updatePost } from '../../actions/posts';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import CloseIcon from '@mui/icons-material/Close';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import PublicIcon from '@mui/icons-material/Public';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function Form({ currentId, setCurrentId, showForm, setShowForm }) {
-  const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
   const user = useSelector((state) => state?.auth?.authData);
   const form = useRef();
+  const dispatch = useDispatch();
+
   const [postData, setPostData] = useState({
-    creator: "",
-    title: "",
-    message: "",
-    tags: "",
-    selectedFile: "",
+    creator: user?.result?.name || '',
+    title: '',
+    message: '',
+    tags: '',
+    selectedFile: '',
   });
-  const [shouldRerender, setShouldRerender] = useState(false);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    if (post) setPostData(post)
-    // dispatch(getPost())
-  }, [post])
 
   useEffect(() => {
-    if (shouldRerender) {
-      // Any additional actions to perform on re-render
-      setShouldRerender(false); // Reset the state to avoid infinite loop
-    }
-  }, [shouldRerender]);
+    if (post) setPostData(post);
+  }, [post]);
 
-  //for form
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (form.current && !form.current.contains(e.target)) {
         const postsDiv = document.getElementById('posts');
-        if (postsDiv && postsDiv.contains(e.target)) {
-          return; // Do nothing if clicking inside the posts div
-        }
-        setShowForm(!showForm);
-       // Hide the form when clicking outside
+        if (postsDiv && postsDiv.contains(e.target)) return;
+        setShowForm(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const dispatch = useDispatch();
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showForm]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
     try {
       if (currentId) {
         await dispatch(updatePost(currentId, postData));
-        toast.success("Updated Successfully");
+        toast.success('Updated Successfully');
         clear();
       } else {
         await dispatch(createPost(postData));
-        toast.success("Posted Successfully");
+        toast.success('Posted Successfully');
         clear();
       }
     } catch (error) {
-      console.error(error?.response?.data?.message);
-      toast.error(error?.response?.data?.message || "Something went wrong!");
+      toast.error(error?.response?.data?.message || 'Something went wrong!');
     } finally {
       setLoading(false);
     }
   };
-  const clear = () => {
-    setPostData({
-      creator: "",
-      title: "",
-      message: "",
-      tags: "",
-      selectedFile: "",
-    })
-    setCurrentId(null);
-    setTimeout(() => {
-      setShowForm(false);
-    }, 3000);
 
+  const clear = () => {
+    setPostData({ creator: user?.result?.name || '', title: '', message: '', tags: '', selectedFile: '' });
+    setCurrentId(null);
+    setTimeout(() => setShowForm(false), 2000);
   };
+
+  if (!user) {
+    return (
+      <Paper
+        sx={{
+          p: 4,
+          textAlign: 'center',
+          maxWidth: 480,
+          mx: 'auto',
+          borderRadius: 3,
+        }}
+      >
+        <Typography variant="h6" sx={{ color: '#64748b', fontWeight: 500 }}>
+          Please sign in to create content
+        </Typography>
+      </Paper>
+    );
+  }
+
   return (
-    <>
-   
-     { loading ? <CircularProgress/> : user ? <StyledPaper>
-        <form
-          autoComplete="off"
-          onSubmit={handleSubmit}
-          ref={form}
-          className={Styles.form}
-          style={{ width: '70%', justifySelf: 'center' }}
-        >
-          <Typography
-            variant="h5"
+    <Paper
+      elevation={0}
+      sx={{
+        borderRadius: 3,
+        border: '1px solid rgba(0,0,0,0.06)',
+        overflow: 'hidden',
+        maxWidth: 560,
+        mx: 'auto',
+      }}
+    >
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <CircularProgress size={32} sx={{ color: '#6366f1' }} />
+        </Box>
+      )}
+
+      {!loading && (
+        <form autoComplete="off" onSubmit={handleSubmit} ref={form}>
+          {/* Header */}
+          <Box
             sx={{
-              fontWeight: 'bold',
-              color: '#3f51b5',
-              fontFamily: 'Roboto, sans-serif',
-              textAlign: 'center',
-              letterSpacing: '0.5px',
-              mb: 2, // margin bottom
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              px: 2.5,
+              py: 2,
+              borderBottom: '1px solid rgba(0,0,0,0.06)',
             }}
           >
-            Share your memories ✨
-          </Typography>
-          <StyledTextField
-            name="creator"
-            label="Your Name"
-            variant="outlined"
-            fullWidth
-            value={postData.creator}
-            onChange={(e) =>
-              setPostData({ ...postData, creator: e.target.value })
-            }
-            style={{ borderRadius: '60px', justifySelf: 'center' }}
-          />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <IconButton
+                size="small"
+                onClick={() => setShowForm(false)}
+                sx={{ color: '#64748b' }}
+              >
+                <ArrowBackIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 700, fontSize: '1rem', color: '#0f172a' }}
+              >
+                {currentId ? 'Edit Post' : 'Create Post'}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <IconButton
+                size="small"
+                onClick={() => setShowForm(false)}
+                sx={{ color: '#94a3b8' }}
+              >
+                <CloseIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+            </Box>
+          </Box>
 
-          <StyledTextField
-            name="title"
-            label="Title eg: visit Ethiopia"
-            variant="outlined"
-            fullWidth
-            value={postData.title}
-            onChange={(e) =>
-              setPostData({ ...postData, title: e.target.value })
-            }
-          />
+          {/* Creator info */}
+          <Box sx={{ px: 2.5, pt: 2, pb: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Avatar
+              sx={{
+                width: 36,
+                height: 36,
+                bgcolor: '#6366f1',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+              }}
+            >
+              {user?.result?.name?.charAt(0)?.toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.875rem' }}>
+                {user?.result?.name}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <PublicIcon sx={{ fontSize: 12, color: '#94a3b8' }} />
+                <Typography variant="caption" sx={{ color: '#94a3b8', fontSize: '0.7rem' }}>
+                  Public
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
 
-          <StyledTextField
-            name="message"
-            label="Message"
-            variant="outlined"
-            fullWidth
-            value={postData.message}
-            onChange={(e) =>
-              setPostData({ ...postData, message: e.target.value })
-            }
-          />
-
-          <StyledTextField
-            label="tags"
-            variant="outlined"
-            fullWidth
-            value={postData.tags}
-            onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
-          />
-
-          <div className={Styles.fileInput}>
-            <FileBase
-              type="file"
-              multiple={false}
-              onDone={({ base64 }) =>
-                setPostData({ ...postData, selectedFile: base64 })
-              }
+          {/* Title */}
+          <Box sx={{ px: 2.5, pb: 1.5 }}>
+            <TextField
+              fullWidth
+              placeholder="Post title..."
+              variant="standard"
+              value={postData.title}
+              onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+              InputProps={{
+                disableUnderline: true,
+                sx: {
+                  fontSize: '1.1rem',
+                  fontWeight: 700,
+                  color: '#0f172a',
+                  '&::placeholder': { color: '#cbd5e1', fontWeight: 600 },
+                },
+              }}
             />
-          </div>
+          </Box>
 
-          <StyledButton
-            variant="container"
-            color="primary"
-            size="large"
-            type="submit"
+          {/* Content */}
+          <Box sx={{ px: 2.5, pb: 2 }}>
+            <TextField
+              fullWidth
+              multiline
+              minRows={3}
+              placeholder="Share an insight, a story, or something your audience will love..."
+              variant="outlined"
+              value={postData.message}
+              onChange={(e) => setPostData({ ...postData, message: e.target.value })}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: '#f8fafc',
+                  borderRadius: 2.5,
+                  fontSize: '0.9375rem',
+                  lineHeight: 1.7,
+                  '& fieldset': { borderColor: 'rgba(0,0,0,0.08)' },
+                  '&:hover fieldset': { borderColor: '#6366f1' },
+                  '&.Mui-focused fieldset': { borderColor: '#6366f1', borderWidth: 2 },
+                },
+              }}
+            />
+          </Box>
 
-            fullWidth
+          {/* Tags */}
+          <Box sx={{ px: 2.5, pb: 2 }}>
+            <TextField
+              fullWidth
+              placeholder="Add tags (comma separated)"
+              variant="outlined"
+              value={postData.tags}
+              onChange={(e) => setPostData({ ...postData, tags: e.target.value })}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: '#f8fafc',
+                  borderRadius: 2.5,
+                  fontSize: '0.875rem',
+                  '& fieldset': { borderColor: 'rgba(0,0,0,0.08)' },
+                  '&:hover fieldset': { borderColor: '#6366f1' },
+                  '&.Mui-focused fieldset': { borderColor: '#6366f1', borderWidth: 2 },
+                },
+              }}
+            />
+          </Box>
 
-          >
-            Post
-          </StyledButton>
-          <Button
-            variant="container"
-            color="secondary"
-            size="small"
-            onClick={clear}
-            fullWidth
-          >
-            Clear
-          </Button>
+          {/* Media upload preview */}
+          {postData.selectedFile && (
+            <Box sx={{ px: 2.5, pb: 2 }}>
+              <Box
+                sx={{
+                  borderRadius: 2.5,
+                  overflow: 'hidden',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  position: 'relative',
+                }}
+              >
+                <Box
+                  component="img"
+                  src={postData.selectedFile}
+                  alt="Preview"
+                  sx={{ width: '100%', maxHeight: 300, objectFit: 'cover' }}
+                />
+                <IconButton
+                  size="small"
+                  onClick={() => setPostData({ ...postData, selectedFile: '' })}
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    bgcolor: 'rgba(0,0,0,0.5)',
+                    color: '#fff',
+                    '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' },
+                  }}
+                >
+                  <CloseIcon sx={{ fontSize: 16 }} />
+                </IconButton>
+              </Box>
+            </Box>
+          )}
 
+          <Divider />
+
+          {/* Action Buttons */}
+          <Box sx={{ px: 2.5, py: 1.5, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  cursor: 'pointer',
+                  px: 1.5,
+                  py: 0.8,
+                  borderRadius: 2,
+                  '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+                }}
+              >
+                <ImageOutlinedIcon sx={{ fontSize: 18, color: '#6366f1' }} />
+                <Typography variant="caption" sx={{ fontWeight: 500, color: '#6366f1', fontSize: '0.75rem' }}>
+                  <FileBase
+                    type="file"
+                    multiple={false}
+                    onDone={({ base64 }) =>
+                      setPostData({ ...postData, selectedFile: base64 })
+                    }
+                  />
+                </Typography>
+              </Box>
+              <Button
+                size="small"
+                startIcon={<AutoAwesomeIcon sx={{ fontSize: 16 }} />}
+                sx={{
+                  color: '#64748b',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  px: 1.5,
+                  py: 0.8,
+                  '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+                }}
+              >
+                Generate with AI
+              </Button>
+              <Button
+                size="small"
+                startIcon={<ScheduleIcon sx={{ fontSize: 16 }} />}
+                sx={{
+                  color: '#64748b',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  px: 1.5,
+                  py: 0.8,
+                  '&:hover': { bgcolor: 'rgba(99,102,241,0.06)' },
+                }}
+              >
+                Schedule
+              </Button>
+            </Box>
+            <Box sx={{ flex: 1 }} />
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button
+                variant="text"
+                onClick={clear}
+                sx={{ color: '#94a3b8', fontSize: '0.8125rem', fontWeight: 600 }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={loading}
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  fontWeight: 600,
+                  fontSize: '0.8125rem',
+                }}
+              >
+                {currentId ? 'Update' : 'Publish'}
+              </Button>
+            </Box>
+          </Box>
         </form>
-      </StyledPaper> : <Paper className={Styles.paper}>
-        <Typography variant="h6" align="center">
-          Please Sign In to create your own memories and like other's memories.
-        </Typography>
-      </Paper>}
-      <ToastContainer position="top-right" autoClose={3000}/>
-    </>
+      )}
+      <ToastContainer position="top-right" autoClose={3000} />
+    </Paper>
   );
 }
 

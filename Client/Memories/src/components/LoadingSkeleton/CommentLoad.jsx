@@ -1,20 +1,22 @@
-import React from 'react'
-import Skeleton from 'react-loading-skeleton'
+import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { Box } from '@mui/material';
 
 const CommentLoad = () => {
-return (
-    Array(5).fill(0).map((i, index) =>(
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-        <Skeleton circle={true} height={40} width={40} style={{ marginRight: '1rem' }} />
-        <div style={{ flex: 1 }}>
-            <Skeleton height={15} width="30%" style={{ marginBottom: '0.5rem' }} />
-            <Skeleton height={10} width="80%" />
-        </div>
-    </div>
-    ))
- 
-)
-}
+  return Array(4)
+    .fill(0)
+    .map((_, index) => (
+      <Box
+        key={index}
+        sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1.5 }}
+      >
+        <Skeleton circle height={32} width={32} />
+        <Box sx={{ flex: 1 }}>
+          <Skeleton width="30%" height={12} borderRadius={4} style={{ marginBottom: 6 }} />
+          <Skeleton width="80%" height={10} borderRadius={4} />
+        </Box>
+      </Box>
+    ));
+};
 
-export default CommentLoad
+export default CommentLoad;
