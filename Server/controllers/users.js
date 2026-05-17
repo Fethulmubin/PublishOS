@@ -22,10 +22,9 @@ const signin = async (req, res) => {
 
         res.status(200).json({ success: true, result: existingUser, token });
     } catch (error) {
+        console.error('Signin error:', error.message);
         res.status(500).json({ success: false, message: "Something went wrong." });
-
     }
-
 }
 const signup = async (req, res) => {
     const { email, password, confirmPassword, firstName, lastName } = req.body;
@@ -44,12 +43,11 @@ const signup = async (req, res) => {
         res.status(200).json({ success: true, result: newUser, token });
     
     } catch (error) {
+        console.error('Signup error:', error.message);
         res.status(500).json({success: false, message: "Something went wrong." });
-
     }
-   
-
 }
+
 
 const signupWithGoogleCheck = async(id, email, name, password) => {
     try {

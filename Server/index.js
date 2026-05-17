@@ -11,8 +11,16 @@ dotenv.config();
 const app = express();
 
 // Apply middleware
-const frontEndUrl = ['http://localhost:5173', 'https://memories-lb7c.onrender.com'];
-app.use(cors({origin: frontEndUrl})); // Allow requests from the React app
+const allowedOrigins = ['http://localhost:5173', 'https://memories-lb7c.onrender.com'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
