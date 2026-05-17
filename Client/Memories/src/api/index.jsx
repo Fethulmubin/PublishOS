@@ -1,10 +1,7 @@
 import axios from 'axios'
-import Post from '../components/Posts/Post/Post'
 
-import React from 'react'
-
-
-const url = import.meta.env.VITE_API_URL || 'http://localhost:5555/'
+const isProd = window.location.hostname !== 'localhost';
+const url = import.meta.env.VITE_API_URL || (isProd ? 'https://memories-backend-8rsy.onrender.com/' : 'http://localhost:5555/')
 
 const API = axios.create({ baseURL: url });
 
