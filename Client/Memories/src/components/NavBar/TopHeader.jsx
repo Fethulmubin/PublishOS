@@ -3,9 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 
-const TopHeader = ({ onNewPost }) => {
+const TopHeader = ({ onNewPost, pageTitle = 'Feed' }) => {
   const user = useSelector((state) => state?.auth?.authData);
   const navigate = useNavigate();
+
+  const showCreateButton = pageTitle === 'Feed' || pageTitle === 'Dashboard';
 
   return (
     <Box
@@ -27,21 +29,23 @@ const TopHeader = ({ onNewPost }) => {
         variant="h6"
         sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#1e293b' }}
       >
-        Feed
+        {pageTitle}
       </Typography>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
         {user ? (
           <>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon sx={{ fontSize: 18 }} />}
-              onClick={onNewPost}
-              size="small"
-              sx={{ borderRadius: 2, px: 2, py: 1 }}
-            >
-              Create Post
-            </Button>
+            {showCreateButton && (
+              <Button
+                variant="contained"
+                startIcon={<AddIcon sx={{ fontSize: 18 }} />}
+                onClick={onNewPost}
+                size="small"
+                sx={{ borderRadius: 2, px: 2, py: 1 }}
+              >
+                Create Post
+              </Button>
+            )}
             <Avatar
               src={user?.result?.imageURL}
               sx={{

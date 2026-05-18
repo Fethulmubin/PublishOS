@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const isProd = window.location.hostname !== 'localhost';
-const url = import.meta.env.VITE_API_URL || (isProd ? 'https://memories-backend-8rsy.onrender.com/' : 'http://localhost:5555/')
+let url = import.meta.env.VITE_API_URL || (isProd ? 'https://memories-backend-8rsy.onrender.com/' : 'http://localhost:5555/');
+if (!url.endsWith('/')) url += '/';
 
 const API = axios.create({ baseURL: url });
 

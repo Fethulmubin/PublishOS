@@ -24,14 +24,14 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import memories from '../../assets/memories.png';
 
 const navItems = [
-  { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+  { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   { label: 'Feed', icon: <FeedIcon />, path: '/' },
-  { label: 'AI Studio', icon: <AutoAwesomeIcon />, path: '/' },
-  { label: 'Schedule', icon: <CalendarMonthIcon />, path: '/' },
-  { label: 'Analytics', icon: <AnalyticsIcon />, path: '/' },
-  { label: 'Notifications', icon: <NotificationsIcon />, path: '/' },
-  { label: 'Profile', icon: <PersonIcon />, path: '/' },
-  { label: 'Settings', icon: <SettingsIcon />, path: '/' },
+  { label: 'AI Studio', icon: <AutoAwesomeIcon />, path: '/ai-studio' },
+  { label: 'Schedule', icon: <CalendarMonthIcon />, path: '/schedule' },
+  { label: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
+  { label: 'Notifications', icon: <NotificationsIcon />, path: '/notifications' },
+  { label: 'Profile', icon: <PersonIcon />, path: '/profile' },
+  { label: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
 const Sidebar = ({ drawerWidth = 260 }) => {
@@ -40,7 +40,10 @@ const Sidebar = ({ drawerWidth = 260 }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.authData);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });

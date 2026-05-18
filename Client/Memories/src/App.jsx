@@ -7,10 +7,29 @@ import theme from './theme';
 import Layout from './components/Layout/Layout';
 import Home from './components/Home/Home';
 import Auth from './components/Auth/Auth';
+import Dashboard from './components/Pages/Dashboard/Dashboard';
+import AIStudio from './components/Pages/AIStudio/AIStudio';
+import Schedule from './components/Pages/Schedule/Schedule';
+import Analytics from './components/Pages/Analytics/Analytics';
+import Notifications from './components/Pages/Notifications/Notifications';
+import Profile from './components/Pages/Profile/Profile';
+import Settings from './components/Pages/Settings/Settings';
 import NavBottom from './components/NavBottom/NavBottom';
 
 function App() {
   const [showFormGlobal, setShowFormGlobal] = useState(false);
+
+  const pageRoutes = [
+    { path: '/', element: <Home showForm={showFormGlobal} setShowForm={setShowFormGlobal} /> },
+    { path: '/feed', element: <Home showForm={showFormGlobal} setShowForm={setShowFormGlobal} /> },
+    { path: '/dashboard', element: <Dashboard /> },
+    { path: '/ai-studio', element: <AIStudio /> },
+    { path: '/schedule', element: <Schedule /> },
+    { path: '/analytics', element: <Analytics /> },
+    { path: '/notifications', element: <Notifications /> },
+    { path: '/profile', element: <Profile /> },
+    { path: '/settings', element: <Settings /> },
+  ];
 
   return (
     <ThemeProvider theme={theme}>
@@ -21,29 +40,32 @@ function App() {
       >
         <BrowserRouter>
           <Routes>
-            <Route
-              path="/"
-              element={
-                <Layout onNewPost={() => setShowFormGlobal(true)}>
-                  <Home
-                    showForm={showFormGlobal}
-                    setShowForm={setShowFormGlobal}
-                  />
-                </Layout>
-              }
-            />
+            {pageRoutes.map(({ path, element }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <Layout onNewPost={() => setShowFormGlobal(true)}>
+                    {element}
+                  </Layout>
+                }
+              />
+            ))}
             <Route path="/auth" element={<Auth />} />
           </Routes>
           <Routes>
-            <Route
-              path="/"
-              element={
-                <NavBottom
-                  showForm={showFormGlobal}
-                  setShowForm={setShowFormGlobal}
-                />
-              }
-            />
+            {pageRoutes.map(({ path }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <NavBottom
+                    showForm={showFormGlobal}
+                    setShowForm={setShowFormGlobal}
+                  />
+                }
+              />
+            ))}
           </Routes>
         </BrowserRouter>
       </SkeletonTheme>
