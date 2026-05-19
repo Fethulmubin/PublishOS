@@ -8,30 +8,30 @@ const CreatorProfileHeader = ({ user, stats, socialLinks }) => {
     <Box sx={{ borderRadius: 3, overflow: 'hidden', bgcolor: '#ffffff', border: '1px solid rgba(0,0,0,0.06)' }}>
       <Box
         sx={{
-          height: 160,
+          height: { xs: 100, sm: 160 },
           background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #7c3aed 100%)',
           position: 'relative',
         }}
       />
-      <Box sx={{ px: 3, pb: 3, position: 'relative' }}>
+      <Box sx={{ px: { xs: 2, sm: 3 }, pb: 3, position: 'relative' }}>
         <Avatar
           src={user?.imageURL}
           sx={{
-            width: 80,
-            height: 80,
-            fontSize: '1.5rem',
+            width: { xs: 64, sm: 80 },
+            height: { xs: 64, sm: 80 },
+            fontSize: { xs: '1.2rem', sm: '1.5rem' },
             bgcolor: '#6366f1',
             border: '4px solid #ffffff',
             position: 'absolute',
-            top: -40,
-            left: 24,
+            top: { xs: -32, sm: -40 },
+            left: { xs: 16, sm: 24 },
             boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }}
         >
           {user?.name?.charAt(0)?.toUpperCase()}
         </Avatar>
 
-        <Box sx={{ mt: 5, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <Box sx={{ mt: { xs: 3.5, sm: 5 }, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#0f172a' }}>
               {user?.name || 'Creator'}
@@ -68,7 +68,7 @@ const CreatorProfileHeader = ({ user, stats, socialLinks }) => {
           </Typography>
         )}
 
-        <Box sx={{ display: 'flex', gap: 4, mt: 2.5, pt: 2.5, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+        <Box sx={{ display: 'flex', gap: { xs: 2, sm: 4 }, mt: 2.5, pt: 2.5, borderTop: '1px solid rgba(0,0,0,0.06)', justifyContent: { xs: 'space-between', sm: 'flex-start' } }}>
           {[
             { label: 'Posts', value: stats?.posts || '--' },
             { label: 'Followers', value: stats?.followers || '--' },
