@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Typography, Grid, TextField, Button, Chip, MenuItem, Select, FormControl, InputLabel,
 } from '@mui/material';
@@ -12,10 +12,13 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import HistoryIcon from '@mui/icons-material/History';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ModernSectionHeader from '../../Common/ModernSectionHeader';
 import AIActionCard from '../../Common/AIActionCard';
 import AIRecommendationCard from '../../Common/AIRecommendationCard';
 import EmptyState from '../../Common/EmptyState';
+import LinkedInPublishDialog from '../../Common/LinkedInPublishDialog';
+import { generateCaption, getContentSuggestions, getAIHistory } from '../../../api';
 
 const aiTools = [
   { icon: <AutoAwesomeIcon />, title: 'Generate Caption', description: 'Create engaging captions for your posts with AI-powered copywriting.', color: '#6366f1' },
@@ -29,45 +32,47 @@ const aiTools = [
 const tones = ['Professional', 'Casual', 'Witty', 'Inspirational', 'Educational', 'Storytelling'];
 const platforms = ['LinkedIn', 'Twitter', 'Instagram', 'Facebook', 'TikTok', 'Blog'];
 
-const historyItems = [
-  'How to build a personal brand in 2026',
-  '5 content marketing tips for creators',
-  'The future of AI in content creation',
-  'Behind the scenes: A day in my life',
-];
-
-const suggestions = [
-  'Your recent LinkedIn posts about "creator economy" perform 2.5x above average. Consider expanding this topic.',
-  'Shorter captions (under 100 characters) get 40% more engagement on your Instagram posts.',
-  'Your audience engages most on Tuesdays at 11 AM. Schedule your next important post accordingly.',
-];
-
 const AIStudio = () => {
   const [topic, setTopic] = useState('');
   const [tone, setTone] = useState('Professional');
   const [platform, setPlatform] = useState('LinkedIn');
   const [generated, setGenerated] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [historyItems, setHistoryItems] = useState([]);
+  const [publishOpen, setPublishOpen] = useState(false);
 
-  const handleGenerate = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [sugRes, histRes] = await Promise.all([
+          getContentSuggestions(),
+          getAIHistory().catch(() => ({ data: { data: [] } })),
+        ]);
+        setSuggestions(sugRes.data?.data?.suggestions || []);
+        setHistoryItems(histRes.data?.data || []);
+      } catch (err) {
+        console.error('AI data load error:', err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
-    setTimeout(() => {
-      setGenerated(`Here's a ${tone.toLowerCase()} caption for ${platform} about "${topic}":
-
-Ready to level up your content game? 🚀
-
-After months of experimenting with different formats, here's what I've learned about ${topic.toLowerCase()}:
-
-✨ Consistency beats perfection every time
-✨ Your unique perspective is your superpower
-✨ Engagement > Vanity metrics
-
-What's your biggest takeaway from this? Drop it in the comments! 👇
-
-#${topic.replace(/\s+/g, '')} #ContentCreation #CreatorTips`);
+    try {
+      const { data } = await generateCaption({ prompt: topic, tone: tone.toLowerCase(), platform: platform.toLowerCase() });
+      setGenerated(data.data.caption);
+    } catch (err) {
+      setGenerated(`[Error generating content. Please try again.]`);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
+  };
+
+  const handleCopy = () => {
+    if (generated) navigator.clipboard.writeText(generated);
   };
 
   return (
@@ -103,14 +108,14 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
           variant="outlined"
           sx={{ mb: 2 }}
         />
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
-          <FormControl size="small" sx={{ minWidth: 160 }}>
+        <Box sx={{ display: 'flex', gap: 1.5, flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, mb: 2 }}>
+          <FormControl size="small" fullWidth sx={{ minWidth: { xs: '100%', sm: 160 } }}>
             <InputLabel>Tone</InputLabel>
             <Select value={tone} onChange={(e) => setTone(e.target.value)} label="Tone">
               {tones.map((t) => <MenuItem key={t} value={t}>{t}</MenuItem>)}
             </Select>
           </FormControl>
-          <FormControl size="small" sx={{ minWidth: 160 }}>
+          <FormControl size="small" fullWidth sx={{ minWidth: { xs: '100%', sm: 160 } }}>
             <InputLabel>Platform</InputLabel>
             <Select value={platform} onChange={(e) => setPlatform(e.target.value)} label="Platform">
               {platforms.map((p) => <MenuItem key={p} value={p}>{p}</MenuItem>)}
@@ -119,9 +124,10 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
           <Button
             variant="contained"
             startIcon={<AutoAwesomeIcon />}
-            onClick={handleGenerate}
+            onClick={() => handleGenerate()}
             disabled={!topic.trim() || loading}
-            sx={{ borderRadius: 2, px: 3 }}
+            fullWidth
+            sx={{ borderRadius: 2, px: 3, mt: { xs: 0.5, sm: 0 } }}
           >
             {loading ? 'Generating...' : 'Generate'}
           </Button>
@@ -146,7 +152,9 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
           <Grid container spacing={1.5}>
             {aiTools.map((tool, i) => (
               <Grid item xs={12} sm={6} key={i}>
-                <AIActionCard {...tool} />
+                <AIActionCard {...tool} onClick={() => {
+                  if (tool.title === 'Generate Caption') handleGenerate();
+                }} />
               </Grid>
             ))}
           </Grid>
@@ -183,10 +191,19 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
                 </Box>
               ) : generated ? (
                 <Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1.5 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 1.5 }}>
+                    <Button
+                      size="small"
+                      startIcon={<LinkedInIcon sx={{ fontSize: 16 }} />}
+                      onClick={() => setPublishOpen(true)}
+                      sx={{ fontSize: '0.75rem', color: '#0A66C2' }}
+                    >
+                      Post to LinkedIn
+                    </Button>
                     <Button
                       size="small"
                       startIcon={<ContentCopyIcon sx={{ fontSize: 16 }} />}
+                      onClick={handleCopy}
                       sx={{ fontSize: '0.75rem', color: '#64748b' }}
                     >
                       Copy
@@ -225,9 +242,11 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
               icon={<PsychologyIcon sx={{ fontSize: 18 }} />}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              {suggestions.map((s, i) => (
-                <AIRecommendationCard key={i} suggestion={s} actionLabel="Apply Suggestion" />
-              ))}
+              {suggestions.length > 0 ? suggestions.map((s, i) => (
+                <AIRecommendationCard key={i} suggestion={s.title + ': ' + s.description} actionLabel="Apply" />
+              )) : (
+                <EmptyState icon={<LightbulbIcon />} title="No suggestions yet" description="AI suggestions will appear here." />
+              )}
             </Box>
           </Box>
 
@@ -244,10 +263,10 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
               icon={<HistoryIcon sx={{ fontSize: 18 }} />}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {historyItems.map((item, i) => (
+              {historyItems.length > 0 ? historyItems.map((item, i) => (
                 <Box
-                  key={i}
-                  onClick={() => setTopic(item)}
+                  key={item._id || i}
+                  onClick={() => setTopic(item.input || item.output?.substring(0, 50))}
                   sx={{
                     p: 1.5,
                     borderRadius: 2,
@@ -261,17 +280,24 @@ What's your biggest takeaway from this? Drop it in the comments! 👇
                     variant="body2"
                     sx={{ fontSize: '0.8125rem', color: '#334155', fontWeight: 500 }}
                   >
-                    {item}
+                    {item.input || item.output?.substring(0, 50) || 'AI Generation'}
                   </Typography>
                   <Typography variant="caption" sx={{ fontSize: '0.6875rem', color: '#94a3b8' }}>
-                    {['2 hours ago', 'Yesterday', '2 days ago', '3 days ago'][i]}
+                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'Recently'}
                   </Typography>
                 </Box>
-              ))}
+              )) : (
+                <EmptyState icon={<HistoryIcon />} title="No history yet" description="Your AI generations will appear here." />
+              )}
             </Box>
           </Box>
         </Grid>
       </Grid>
+      <LinkedInPublishDialog
+        open={publishOpen}
+        onClose={() => setPublishOpen(false)}
+        initialContent={generated}
+      />
     </Box>
   );
 };
