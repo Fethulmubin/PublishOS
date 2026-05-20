@@ -1,9 +1,10 @@
-import { Box, Typography, Button, Avatar } from '@mui/material';
+import { Box, Typography, Button, Avatar, IconButton } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
+import MenuIcon from '@mui/icons-material/Menu';
 
-const TopHeader = ({ onNewPost, pageTitle = 'Feed' }) => {
+const TopHeader = ({ onNewPost, pageTitle = 'Feed', onToggleMobile }) => {
   const user = useSelector((state) => state?.auth?.authData);
   const navigate = useNavigate();
 
@@ -15,7 +16,7 @@ const TopHeader = ({ onNewPost, pageTitle = 'Feed' }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        px: { xs: 2, md: 6 },
+        px: { xs: 1.5, md: 6 },
         py: 1.5,
         borderBottom: '1px solid',
         borderColor: 'rgba(0,0,0,0.06)',
@@ -23,14 +24,24 @@ const TopHeader = ({ onNewPost, pageTitle = 'Feed' }) => {
         position: 'sticky',
         top: 0,
         zIndex: 1100,
+        minHeight: 56,
       }}
     >
-      <Typography
-        variant="h6"
-        sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#1e293b' }}
-      >
-        {pageTitle}
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <IconButton
+          onClick={onToggleMobile}
+          sx={{ display: { md: 'none' }, color: '#64748b', p: 0.5 }}
+          size="small"
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#1e293b' }}
+        >
+          {pageTitle}
+        </Typography>
+      </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
         {user ? (
@@ -41,9 +52,10 @@ const TopHeader = ({ onNewPost, pageTitle = 'Feed' }) => {
                 startIcon={<AddIcon sx={{ fontSize: 18 }} />}
                 onClick={onNewPost}
                 size="small"
-                sx={{ borderRadius: 2, px: 2, py: 1 }}
+                sx={{ borderRadius: 2, px: { xs: 1.5, md: 2 }, py: 1, fontSize: { xs: '0.75rem', md: '0.875rem' } }}
               >
-                Create Post
+                <Box sx={{ display: { xs: 'none', sm: 'inline' } }}>Create Post</Box>
+                <Box sx={{ display: { xs: 'inline', sm: 'none' } }}>Post</Box>
               </Button>
             )}
             <Avatar
