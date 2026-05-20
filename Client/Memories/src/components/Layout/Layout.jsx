@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
@@ -17,13 +18,19 @@ const pageConfig = {
 
 const Layout = ({ children, onNewPost }) => {
   const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const config = Object.entries(pageConfig).find(([path]) =>
     location.pathname.startsWith(path)
   )?.[1] || { title: 'Feed', maxWidth: 720 };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8fafc' }}>
-      <Sidebar drawerWidth={drawerWidth} />
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        onOpen={() => setMobileOpen(true)}
+      />
 
       <Box
         sx={{
@@ -32,15 +39,20 @@ const Layout = ({ children, onNewPost }) => {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
+          width: { xs: '100%', md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
-        <TopHeader onNewPost={onNewPost} pageTitle={config.title} />
+        <TopHeader
+          onNewPost={onNewPost}
+          pageTitle={config.title}
+          onToggleMobile={() => setMobileOpen(!mobileOpen)}
+        />
         <Box
           component="main"
           sx={{
             flex: 1,
             py: 3,
-            px: { xs: 2, md: 6 },
+            px: { xs: 1.5, md: 6 },
             maxWidth: config.maxWidth,
             width: '100%',
             mx: 'auto',
