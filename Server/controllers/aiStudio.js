@@ -5,6 +5,7 @@ import { generateCaption as captionService } from "../services/ai/captionGenerat
 import { rewriteContent as rewriteService } from "../services/ai/contentRewriter.js";
 import { generateHashtags as hashtagService } from "../services/ai/hashtagGenerator.js";
 import { getContentSuggestions as suggestionsService } from "../services/ai/contentSuggester.js";
+import { structureForPost } from "../services/ai/contentTransformer.js";
 
 const generateCaption = async (req, res) => {
   try {
@@ -147,6 +148,19 @@ const getHistory = async (req, res) => {
   }
 };
 
+const structureContent = async (req, res) => {
+  try {
+    const { content, tone, platform } = req.body;
+    if (!content || !content.trim()) {
+      return res.status(400).json({ success: false, message: "Content is required." });
+    }
+    const structured = await structureForPost({ content, tone, platform });
+    res.status(200).json({ success: true, data: structured });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const enhancePost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -178,4 +192,4 @@ const enhancePost = async (req, res) => {
   }
 };
 
-export { generateCaption, rewriteContent, generateHashtags, getContentSuggestions, getHistory, repurposeContent, generateContent, enhancePost };
+export { generateCaption, rewriteContent, generateHashtags, getContentSuggestions, getHistory, repurposeContent, generateContent, enhancePost, structureContent };
