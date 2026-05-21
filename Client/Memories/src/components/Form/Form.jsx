@@ -37,6 +37,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
+      if (aiOpen || scheduleOpen) return;
       if (form.current && !form.current.contains(e.target)) {
         const postsDiv = document.getElementById('posts');
         if (postsDiv && postsDiv.contains(e.target)) return;
@@ -45,7 +46,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showForm]);
+  }, [showForm, aiOpen, scheduleOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
