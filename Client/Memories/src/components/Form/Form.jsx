@@ -74,7 +74,11 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
   };
 
   const handleAIApply = (result) => {
-    setPostData((prev) => ({ ...prev, message: result }));
+    if (typeof result === 'object' && result !== null) {
+      setPostData((prev) => ({ ...prev, ...result }));
+    } else {
+      setPostData((prev) => ({ ...prev, message: result }));
+    }
   };
 
   if (!user) {
@@ -86,7 +90,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
   }
 
   return (
-    <Paper elevation={0} sx={{ borderRadius: 3, border: '1px solid rgba(0,0,0,0.06)', overflow: 'hidden', maxWidth: 560, mx: 'auto' }}>
+    <Paper elevation={0} sx={{ borderRadius: 3, border: '1px solid rgba(0,0,0,0.06)', maxWidth: 560, mx: 'auto', maxHeight: '90vh', overflowY: 'auto' }}>
       {loading && <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress size={32} sx={{ color: '#6366f1' }} /></Box>}
 
       {!loading && (
