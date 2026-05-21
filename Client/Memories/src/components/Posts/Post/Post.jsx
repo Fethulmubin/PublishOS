@@ -65,8 +65,9 @@ function Post({ post, setCurrentId, showForm, setShowForm }) {
   const handleRepurpose = () => { setAiMode('rewrite'); setAiOpen(true); };
 
   const handleAIApply = async (result) => {
+    const content = typeof result === 'object' && result !== null ? result.message || result.title : result;
     try {
-      const { data } = await enhancePostApi(post._id, result);
+      const { data } = await enhancePostApi(post._id, content);
       dispatch({ type: 'UPDATE', payload: data.data });
       setSnackbar({ open: true, message: 'Post enhanced with AI successfully!', severity: 'success' });
     } catch (err) {
