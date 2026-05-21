@@ -156,7 +156,7 @@ const handleOAuthCallback = async (req, res) => {
 const publishToLinkedIn = async (req, res) => {
   try {
     const userId = req.userId;
-    const { content } = req.body;
+    const { content, media } = req.body;
 
     if (!content || !content.trim()) {
       return res.status(400).json({ success: false, message: "Content is required." });
@@ -170,6 +170,7 @@ const publishToLinkedIn = async (req, res) => {
     const result = await linkedinService.publishPost({
       accessToken: account.accessToken,
       content: content.trim(),
+      media,
     });
 
     res.status(200).json({

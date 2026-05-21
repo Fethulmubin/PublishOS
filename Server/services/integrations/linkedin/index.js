@@ -62,7 +62,51 @@ const getProfile = async (accessToken) => {
   };
 };
 
-const publishPost = async ({ accessToken, content }) => {
+const uploadMedia = async (accessToken, base64Data) => {
+  const registerRes = await fetch(`${LINKEDIN_API_URL}/rest/images?action=initializeUpload`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'X-Restli-Protocol-Version': '2.0.0',
+      'LinkedIn-Version': '202603',
+    },
+    body: JSON.stringify({
+      initializeUploadRequest: {
+        owner: `urn:li:person:${accessToken.split('.')[0]}`,
+      },
+    }),
+  });
+
+  if (!registerRes.ok) {
+    const errText = await registerRes.text();
+    console.error('LinkedIn media register failed:', errText);
+    return null;
+  }
+
+  const registerData = await registerRes.json();
+  const uploadUrl = registerData.value?.uploadMechanism?.['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']?.uploadUrl;
+  const imageUrn = registerData.value?.image;
+
+  if (!uploadUrl || !imageUrn) return null;
+
+  const buffer = Buffer.from(base64Data.split(',')[1] || base64Data, 'base64');
+
+  const uploadRes = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'image/png' },
+    body: buffer,
+  });
+
+  if (!uploadRes.ok) {
+    console.error('LinkedIn media upload failed:', await uploadRes.text());
+    return null;
+  }
+
+  return imageUrn;
+};
+
+const publishPost = async ({ accessToken, content, media }) => {
   const profileResponse = await fetch(`${LINKEDIN_API_URL}/v2/userinfo`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
@@ -81,6 +125,17 @@ const publishPost = async ({ accessToken, content }) => {
     lifecycleState: 'PUBLISHED',
     isReshareDisabledByAuthor: false,
   };
+
+  if (media) {
+    const imageUrn = await uploadMedia(accessToken, media);
+    if (imageUrn) {
+      body.content = {
+        media: {
+          id: imageUrn,
+        },
+      };
+    }
+  }
 
   const response = await fetch(`${LINKEDIN_API_URL}/rest/posts`, {
     method: 'POST',
