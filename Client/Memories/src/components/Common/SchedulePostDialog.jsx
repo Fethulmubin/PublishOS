@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, CircularProgress, Alert, FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { createScheduledPost } from '../../api';
+import { createScheduledPost, updateScheduledPost } from '../../api';
 
 const platforms = [
   { value: 'linkedin', label: 'LinkedIn', color: '#0A66C2' },
@@ -10,12 +10,30 @@ const platforms = [
   { value: 'facebook', label: 'Facebook', color: '#1877F2' },
 ];
 
-const SchedulePostDialog = ({ open, onClose, onCreated, initialContent }) => {
+const SchedulePostDialog = ({ open, onClose, onCreated, initialContent, editPost }) => {
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    if (open && initialContent) setContent(initialContent);
-  }, [open, initialContent]);
+    if (open && initialContent && !editPost) setContent(initialContent);
+  }, [open, initialContent, editPost]);
+
+  useEffect(() => {
+    if (open && editPost) {
+      setContent(editPost.content || '');
+      setSelectedPlatforms(editPost.platforms || []);
+      if (editPost.scheduledAt) {
+        const d = new Date(editPost.scheduledAt);
+        setScheduledDate(d.toISOString().split('T')[0]);
+        setScheduledTime(d.toTimeString().split(' ')[0].slice(0, 5));
+      }
+    } else if (!open) {
+      setContent('');
+      setSelectedPlatforms([]);
+      setScheduledDate('');
+      setScheduledTime('');
+      setError('');
+    }
+  }, [open, editPost]);
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');
@@ -37,7 +55,11 @@ const SchedulePostDialog = ({ open, onClose, onCreated, initialContent }) => {
     setError('');
     try {
       const scheduledAt = new Date(`${scheduledDate}T${scheduledTime}`);
-      await createScheduledPost({ content, platforms: selectedPlatforms, scheduledAt });
+      if (editPost) {
+        await updateScheduledPost(editPost._id, { content, platforms: selectedPlatforms, scheduledAt });
+      } else {
+        await createScheduledPost({ content, platforms: selectedPlatforms, scheduledAt });
+      }
       onCreated?.();
       handleClose();
     } catch (err) {
@@ -55,7 +77,7 @@ const SchedulePostDialog = ({ open, onClose, onCreated, initialContent }) => {
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
         <Box sx={{ color: '#6366f1', display: 'flex' }}><CalendarMonthIcon /></Box>
-        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem' }}>Schedule Post</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem' }}>{editPost ? 'Edit Scheduled Post' : 'Schedule Post'}</Typography>
       </DialogTitle>
       <DialogContent>
         {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>{error}</Alert>}
@@ -123,7 +145,7 @@ const SchedulePostDialog = ({ open, onClose, onCreated, initialContent }) => {
           disabled={!content.trim() || !scheduledDate || !scheduledTime || selectedPlatforms.length === 0 || loading}
           startIcon={loading ? <CircularProgress size={16} color="inherit" /> : <CalendarMonthIcon />}
         >
-          {loading ? 'Scheduling...' : 'Schedule Post'}
+          {loading ? 'Saving...' : editPost ? 'Save Changes' : 'Schedule Post'}
         </Button>
       </DialogActions>
     </Dialog>

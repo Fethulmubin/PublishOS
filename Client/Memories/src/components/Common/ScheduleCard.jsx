@@ -1,4 +1,5 @@
-import { Box, Typography, Button, Chip } from '@mui/material';
+import { Box, Typography, Button, Chip, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import PlatformBadge from './PlatformBadge';
 
 const statusConfig = {
@@ -8,7 +9,7 @@ const statusConfig = {
   Failed: { color: '#ef4444', bg: '#ef444410', label: 'Failed' },
 };
 
-const ScheduleCard = ({ content, platform, dateTime, status = 'Draft', onEdit, onPublish }) => {
+const ScheduleCard = ({ content, platform, dateTime, status = 'Draft', onEdit, onPublish, onDelete }) => {
   const config = statusConfig[status] || statusConfig.Draft;
 
   return (
@@ -26,18 +27,25 @@ const ScheduleCard = ({ content, platform, dateTime, status = 'Draft', onEdit, o
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 1.5 }}>
         <PlatformBadge platform={platform} />
-        <Chip
-          label={config.label}
-          size="small"
-          sx={{
-            borderRadius: 1,
-            fontWeight: 600,
-            fontSize: '0.6875rem',
-            height: 22,
-            bgcolor: config.bg,
-            color: config.color,
-          }}
-        />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {onDelete && (
+            <IconButton size="small" onClick={onDelete} sx={{ color: '#94a3b8', '&:hover': { color: '#ef4444' } }}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          )}
+          <Chip
+            label={config.label}
+            size="small"
+            sx={{
+              borderRadius: 1,
+              fontWeight: 600,
+              fontSize: '0.6875rem',
+              height: 22,
+              bgcolor: config.bg,
+              color: config.color,
+            }}
+          />
+        </Box>
       </Box>
 
       <Typography
