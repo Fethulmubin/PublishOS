@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, CircularProgress, Alert, FormControl, InputLabel, Select, MenuItem, Chip } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { createScheduledPost } from '../../api';
@@ -10,8 +10,12 @@ const platforms = [
   { value: 'facebook', label: 'Facebook', color: '#1877F2' },
 ];
 
-const SchedulePostDialog = ({ open, onClose, onCreated }) => {
+const SchedulePostDialog = ({ open, onClose, onCreated, initialContent }) => {
   const [content, setContent] = useState('');
+
+  useEffect(() => {
+    if (open && initialContent) setContent(initialContent);
+  }, [open, initialContent]);
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');

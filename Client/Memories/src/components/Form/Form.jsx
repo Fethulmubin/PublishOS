@@ -185,7 +185,7 @@ function Form({ currentId, setCurrentId, showForm, setShowForm }) {
       )}
 
       <AIEnhanceDialog open={aiOpen} onClose={() => setAiOpen(false)} initialContent={postData.message} mode="enhance" onApply={handleAIApply} />
-      <SchedulePostDialog open={scheduleOpen} onClose={() => setScheduleOpen(false)} />
+      <SchedulePostDialog open={scheduleOpen} onClose={() => setScheduleOpen(false)} initialContent={postData.message} />
       <ToastContainer position="top-right" autoClose={3000} />
     </Paper>
   );

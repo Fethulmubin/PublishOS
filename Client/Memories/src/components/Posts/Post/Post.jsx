@@ -239,7 +239,7 @@ function Post({ post, setCurrentId, showForm, setShowForm }) {
       </Box>
 
       <LinkedInPublishDialog open={linkedInOpen} onClose={() => setLinkedInOpen(false)} initialContent={postContent} />
-      <SchedulePostDialog open={scheduleOpen} onClose={() => setScheduleOpen(false)} />
+      <SchedulePostDialog open={scheduleOpen} onClose={() => setScheduleOpen(false)} initialContent={postContent} />
       <AIEnhanceDialog open={aiOpen} onClose={() => setAiOpen(false)} initialContent={postContent} mode={aiMode} onApply={handleAIApply} />
       <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
         <Alert severity={snackbar.severity} variant="filled" sx={{ borderRadius: 2 }}>{snackbar.message}</Alert>

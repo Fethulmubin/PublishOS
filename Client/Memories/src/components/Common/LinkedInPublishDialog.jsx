@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, CircularProgress, Alert, IconButton } from '@mui/material';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
@@ -6,11 +6,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { publishToLinkedIn } from '../../api';
 
 const LinkedInPublishDialog = ({ open, onClose, initialContent, onPublished }) => {
-  const [content, setContent] = useState(initialContent || '');
+  const [content, setContent] = useState('');
   const [media, setMedia] = useState(null);
   const [mediaPreview, setMediaPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    if (open && initialContent) setContent(initialContent);
+  }, [open, initialContent]);
 
   const handleMediaSelect = (e) => {
     const file = e.target.files?.[0];

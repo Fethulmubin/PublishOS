@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Box, Typography, Grid, TextField, Button, Chip, MenuItem, Select, FormControl, InputLabel,
 } from '@mui/material';
+import { useSelector } from 'react-redux';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import EditIcon from '@mui/icons-material/Edit';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -13,12 +14,13 @@ import HistoryIcon from '@mui/icons-material/History';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import PublicIcon from '@mui/icons-material/Public';
 import ModernSectionHeader from '../../Common/ModernSectionHeader';
 import AIActionCard from '../../Common/AIActionCard';
 import AIRecommendationCard from '../../Common/AIRecommendationCard';
 import EmptyState from '../../Common/EmptyState';
 import LinkedInPublishDialog from '../../Common/LinkedInPublishDialog';
-import { generateCaption, getContentSuggestions, getAIHistory } from '../../../api';
+import { generateCaption, getContentSuggestions, getAIHistory, createPosts, structureContent } from '../../../api';
 
 const aiTools = [
   { icon: <AutoAwesomeIcon />, title: 'Generate Caption', description: 'Create engaging captions for your posts with AI-powered copywriting.', color: '#6366f1' },
@@ -33,6 +35,7 @@ const tones = ['Professional', 'Casual', 'Witty', 'Inspirational', 'Educational'
 const platforms = ['LinkedIn', 'Twitter', 'Instagram', 'Facebook', 'TikTok', 'Blog'];
 
 const AIStudio = () => {
+  const user = useSelector((state) => state?.auth?.authData);
   const [topic, setTopic] = useState('');
   const [tone, setTone] = useState('Professional');
   const [platform, setPlatform] = useState('LinkedIn');
@@ -41,9 +44,8 @@ const AIStudio = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [historyItems, setHistoryItems] = useState([]);
   const [publishOpen, setPublishOpen] = useState(false);
-  const [generated, setGenerated] = useState(null);
+  const [promptCache, setPromptCache] = useState('');
 
-  const displayValue = generated || topic;
   const isGenerated = generated !== null;
 
   useEffect(() => {
@@ -65,24 +67,54 @@ const AIStudio = () => {
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
-    setGenerated(null);
+    setPromptCache(topic);
     try {
       const { data } = await generateCaption({ prompt: topic, tone: tone.toLowerCase(), platform: platform.toLowerCase() });
+      setTopic(data.data.caption);
       setGenerated(data.data.caption);
     } catch (err) {
-      setGenerated(`[Error generating content. Please try again.]`);
+      const fallback = `[Error generating content. Please try again.]`;
+      setTopic(fallback);
+      setGenerated(fallback);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRegenerate = () => {
-    setGenerated(null);
-    handleGenerate();
+  const handleRegenerate = async () => {
+    if (!promptCache) return;
+    setLoading(true);
+    try {
+      const { data } = await generateCaption({ prompt: promptCache, tone: tone.toLowerCase(), platform: platform.toLowerCase() });
+      setTopic(data.data.caption);
+      setGenerated(data.data.caption);
+    } catch (err) {
+      const fallback = `[Error generating content. Please try again.]`;
+      setTopic(fallback);
+      setGenerated(fallback);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCopy = () => {
-    if (generated) navigator.clipboard.writeText(generated);
+    if (topic) navigator.clipboard.writeText(topic);
+  };
+
+  const handlePostToPlatform = async () => {
+    if (!topic) return;
+    try {
+      const { data: struct } = await structureContent({ content: topic, tone, platform: platform.toLowerCase() });
+      await createPosts({
+        title: struct.data.title || '',
+        message: struct.data.message || topic,
+        tags: struct.data.tags?.join(',') || '',
+        creator: user?.result?.name || 'Creator',
+        selectedFile: '',
+      });
+    } catch (err) {
+      console.error('Post to platform failed:', err);
+    }
   };
 
   return (
@@ -113,8 +145,8 @@ const AIStudio = () => {
           multiline
           rows={isGenerated ? 8 : 3}
           placeholder="Describe your topic, idea, or content brief..."
-          value={displayValue}
-          onChange={(e) => { if (!isGenerated) setTopic(e.target.value); }}
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
           variant="outlined"
           disabled={loading}
           sx={{ mb: 1.5 }}
@@ -133,9 +165,13 @@ const AIStudio = () => {
               sx={{ borderRadius: 2, fontSize: '0.75rem', color: '#0A66C2', borderColor: '#0A66C2', px: 2, py: 0.6 }}>
               Post to LinkedIn
             </Button>
+            <Button size="small" variant="outlined" startIcon={<PublicIcon sx={{ fontSize: 16 }} />} onClick={handlePostToPlatform}
+              sx={{ borderRadius: 2, fontSize: '0.75rem', color: '#6366f1', borderColor: '#6366f1', px: 2, py: 0.6 }}>
+              Post to Platform
+            </Button>
             <Button size="small" variant="outlined" startIcon={<EditIcon sx={{ fontSize: 16 }} />} onClick={() => setGenerated(null)}
               sx={{ borderRadius: 2, fontSize: '0.75rem', color: '#64748b', borderColor: 'rgba(0,0,0,0.1)', px: 2, py: 0.6 }}>
-              Edit Topic
+              New Generation
             </Button>
           </Box>
         )}
@@ -306,7 +342,7 @@ const AIStudio = () => {
       <LinkedInPublishDialog
         open={publishOpen}
         onClose={() => setPublishOpen(false)}
-        initialContent={generated}
+        initialContent={topic}
       />
     </Box>
   );
