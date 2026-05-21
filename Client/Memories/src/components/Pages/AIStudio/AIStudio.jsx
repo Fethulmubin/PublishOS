@@ -41,6 +41,10 @@ const AIStudio = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [historyItems, setHistoryItems] = useState([]);
   const [publishOpen, setPublishOpen] = useState(false);
+  const [generated, setGenerated] = useState(null);
+
+  const displayValue = generated || topic;
+  const isGenerated = generated !== null;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +65,7 @@ const AIStudio = () => {
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setGenerated(null);
     try {
       const { data } = await generateCaption({ prompt: topic, tone: tone.toLowerCase(), platform: platform.toLowerCase() });
       setGenerated(data.data.caption);
@@ -69,6 +74,11 @@ const AIStudio = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRegenerate = () => {
+    setGenerated(null);
+    handleGenerate();
   };
 
   const handleCopy = () => {
@@ -101,14 +111,35 @@ const AIStudio = () => {
         <TextField
           fullWidth
           multiline
-          rows={3}
+          rows={isGenerated ? 8 : 3}
           placeholder="Describe your topic, idea, or content brief..."
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
+          value={displayValue}
+          onChange={(e) => { if (!isGenerated) setTopic(e.target.value); }}
           variant="outlined"
-          sx={{ mb: 2 }}
+          disabled={loading}
+          sx={{ mb: 1.5 }}
         />
-        <Box sx={{ display: 'flex', gap: 1.5, flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, mb: 2 }}>
+        {isGenerated && (
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1.5 }}>
+            <Button size="small" variant="contained" startIcon={<AutoAwesomeIcon />} onClick={handleRegenerate}
+              sx={{ borderRadius: 2, fontSize: '0.75rem', px: 2, py: 0.6 }}>
+              Regenerate
+            </Button>
+            <Button size="small" variant="outlined" startIcon={<ContentCopyIcon sx={{ fontSize: 16 }} />} onClick={handleCopy}
+              sx={{ borderRadius: 2, fontSize: '0.75rem', color: '#64748b', borderColor: 'rgba(0,0,0,0.1)', px: 2, py: 0.6 }}>
+              Copy
+            </Button>
+            <Button size="small" variant="outlined" startIcon={<LinkedInIcon sx={{ fontSize: 16 }} />} onClick={() => setPublishOpen(true)}
+              sx={{ borderRadius: 2, fontSize: '0.75rem', color: '#0A66C2', borderColor: '#0A66C2', px: 2, py: 0.6 }}>
+              Post to LinkedIn
+            </Button>
+            <Button size="small" variant="outlined" startIcon={<EditIcon sx={{ fontSize: 16 }} />} onClick={() => setGenerated(null)}
+              sx={{ borderRadius: 2, fontSize: '0.75rem', color: '#64748b', borderColor: 'rgba(0,0,0,0.1)', px: 2, py: 0.6 }}>
+              Edit Topic
+            </Button>
+          </Box>
+        )}
+        <Box sx={{ display: 'flex', gap: 1.5, flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, mb: 1.5 }}>
           <FormControl size="small" fullWidth sx={{ minWidth: { xs: '100%', sm: 160 } }}>
             <InputLabel>Tone</InputLabel>
             <Select value={tone} onChange={(e) => setTone(e.target.value)} label="Tone">
@@ -121,29 +152,33 @@ const AIStudio = () => {
               {platforms.map((p) => <MenuItem key={p} value={p}>{p}</MenuItem>)}
             </Select>
           </FormControl>
-          <Button
-            variant="contained"
-            startIcon={<AutoAwesomeIcon />}
-            onClick={() => handleGenerate()}
-            disabled={!topic.trim() || loading}
-            fullWidth
-            sx={{ borderRadius: 2, px: 3, mt: { xs: 0.5, sm: 0 } }}
-          >
-            {loading ? 'Generating...' : 'Generate'}
-          </Button>
+          {!isGenerated && (
+            <Button
+              variant="contained"
+              startIcon={<AutoAwesomeIcon />}
+              onClick={() => handleGenerate()}
+              disabled={!topic.trim() || loading}
+              fullWidth
+              sx={{ borderRadius: 2, px: 3, mt: { xs: 0.5, sm: 0 } }}
+            >
+              {loading ? 'Generating...' : 'Generate'}
+            </Button>
+          )}
         </Box>
-        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-          {['Content strategy', 'Brand building', 'Engagement tips', 'Storytelling'].map((chip) => (
-            <Chip
-              key={chip}
-              label={chip}
-              size="small"
-              variant="outlined"
-              onClick={() => setTopic(chip)}
-              sx={{ borderRadius: 1.5, fontSize: '0.75rem', cursor: 'pointer' }}
-            />
-          ))}
-        </Box>
+        {!isGenerated && (
+          <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+            {['Content strategy', 'Brand building', 'Engagement tips', 'Storytelling'].map((chip) => (
+              <Chip
+                key={chip}
+                label={chip}
+                size="small"
+                variant="outlined"
+                onClick={() => setTopic(chip)}
+                sx={{ borderRadius: 1.5, fontSize: '0.75rem', cursor: 'pointer' }}
+              />
+            ))}
+          </Box>
+        )}
       </Box>
 
       <Grid container spacing={3}>
@@ -159,17 +194,18 @@ const AIStudio = () => {
             ))}
           </Grid>
 
+          {!isGenerated && (
           <Box sx={{ mt: 3 }}>
             <ModernSectionHeader
               title="Generated Content"
-              subtitle={generated ? 'Your AI-generated content appears here' : 'Enter a topic and generate to see results'}
+              subtitle="Enter a topic and generate to see results"
             />
             <Box
               sx={{
                 bgcolor: '#ffffff',
                 borderRadius: 3,
                 border: '1px solid rgba(0,0,0,0.06)',
-                minHeight: 200,
+                minHeight: 120,
                 p: 3,
               }}
             >
@@ -189,33 +225,6 @@ const AIStudio = () => {
                     />
                   ))}
                 </Box>
-              ) : generated ? (
-                <Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mb: 1.5 }}>
-                    <Button
-                      size="small"
-                      startIcon={<LinkedInIcon sx={{ fontSize: 16 }} />}
-                      onClick={() => setPublishOpen(true)}
-                      sx={{ fontSize: '0.75rem', color: '#0A66C2' }}
-                    >
-                      Post to LinkedIn
-                    </Button>
-                    <Button
-                      size="small"
-                      startIcon={<ContentCopyIcon sx={{ fontSize: 16 }} />}
-                      onClick={handleCopy}
-                      sx={{ fontSize: '0.75rem', color: '#64748b' }}
-                    >
-                      Copy
-                    </Button>
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: '#334155', fontSize: '0.875rem', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}
-                  >
-                    {generated}
-                  </Typography>
-                </Box>
               ) : (
                 <EmptyState
                   icon={<AutoAwesomeIcon />}
@@ -225,6 +234,7 @@ const AIStudio = () => {
               )}
             </Box>
           </Box>
+          )}
         </Grid>
 
         <Grid item xs={12} lg={4}>
