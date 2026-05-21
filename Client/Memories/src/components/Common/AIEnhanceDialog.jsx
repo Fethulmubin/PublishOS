@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, CircularProgress, Alert, Select, MenuItem, FormControl, InputLabel, Chip } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { generateCaption, rewriteContent, generateHashtags } from '../../api';
+import { generateCaption, rewriteContent, generateHashtags, structureContent } from '../../api';
 import LinkedInPublishDialog from './LinkedInPublishDialog';
 
 const tones = ['Professional', 'Casual', 'Witty', 'Inspirational', 'Educational', 'Storytelling'];
@@ -44,8 +44,14 @@ const AIEnhanceDialog = ({ open, onClose, initialContent, onApply, mode = 'enhan
     }
   };
 
-  const handleApply = () => {
-    if (result) onApply?.(result, resultType);
+  const handleApply = async () => {
+    if (!result) return;
+    try {
+      const { data } = await structureContent({ content: result, tone, platform: platform.toLowerCase() });
+      onApply?.(data.data, resultType);
+    } catch {
+      onApply?.(result, resultType);
+    }
     handleClose();
   };
 
