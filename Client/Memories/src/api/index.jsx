@@ -60,6 +60,7 @@ export const generateHashtags = (data) => API.post('api/ai/generate-hashtags', d
 export const getContentSuggestions = () => API.get('api/ai/suggestions');
 export const getAIHistory = () => API.get('api/ai/history');
 export const enhancePost = (id, content) => API.patch(`api/ai/enhance-post/${id}`, { content });
+export const structureContent = (data) => API.post('api/ai/structure', data);
 
 // Schedule
 export const getScheduledPosts = () => API.get('api/schedule');
@@ -97,4 +98,4 @@ export const updateThemePreference = (data) => API.patch('api/settings/theme', d
 export const getConnectedAccounts = () => API.get('api/integrations');
 export const getLinkedInAuthUrl = () => API.get('api/integrations/auth/linkedin/url');
 export const disconnectPlatform = (platform) => API.delete(`api/integrations/disconnect/${platform}`);
-export const publishToLinkedIn = (content) => API.post('api/integrations/linkedin/post', { content });
+export const publishToLinkedIn = (payload) => API.post('api/integrations/linkedin/post', payload);
