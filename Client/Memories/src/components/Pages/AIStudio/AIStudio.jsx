@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  Box, Typography, Grid, TextField, Button, Chip, MenuItem, Select, FormControl, InputLabel,
+  Box, Typography, Grid, TextField, Button, Chip, MenuItem, Select, FormControl, InputLabel, Snackbar, Alert,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -45,6 +45,7 @@ const AIStudio = () => {
   const [historyItems, setHistoryItems] = useState([]);
   const [publishOpen, setPublishOpen] = useState(false);
   const [promptCache, setPromptCache] = useState('');
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const isGenerated = generated !== null;
 
@@ -112,8 +113,9 @@ const AIStudio = () => {
         creator: user?.result?.name || 'Creator',
         selectedFile: '',
       });
+      setSnackbar({ open: true, message: 'Posted to platform successfully!', severity: 'success' });
     } catch (err) {
-      console.error('Post to platform failed:', err);
+      setSnackbar({ open: true, message: err.response?.data?.message || 'Failed to post to platform.', severity: 'error' });
     }
   };
 
@@ -229,48 +231,6 @@ const AIStudio = () => {
               </Grid>
             ))}
           </Grid>
-
-          {!isGenerated && (
-          <Box sx={{ mt: 3 }}>
-            <ModernSectionHeader
-              title="Generated Content"
-              subtitle="Enter a topic and generate to see results"
-            />
-            <Box
-              sx={{
-                bgcolor: '#ffffff',
-                borderRadius: 3,
-                border: '1px solid rgba(0,0,0,0.06)',
-                minHeight: 120,
-                p: 3,
-              }}
-            >
-              {loading ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Box
-                      key={i}
-                      sx={{
-                        height: 12,
-                        borderRadius: 1,
-                        bgcolor: '#f1f5f9',
-                        width: `${60 + Math.random() * 40}%`,
-                        animation: 'pulse 1.5s ease-in-out infinite',
-                        '@keyframes pulse': { '0%, 100%': { opacity: 0.5 }, '50%': { opacity: 1 } },
-                      }}
-                    />
-                  ))}
-                </Box>
-              ) : (
-                <EmptyState
-                  icon={<AutoAwesomeIcon />}
-                  title="No content yet"
-                  description="Enter a topic above and click Generate to create AI-powered content."
-                />
-              )}
-            </Box>
-          </Box>
-          )}
         </Grid>
 
         <Grid item xs={12} lg={4}>
@@ -344,6 +304,9 @@ const AIStudio = () => {
         onClose={() => setPublishOpen(false)}
         initialContent={topic}
       />
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar({ ...snackbar, open: false })} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity={snackbar.severity} variant="filled" sx={{ borderRadius: 2 }}>{snackbar.message}</Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card, CardContent, CardMedia, Box, Typography, IconButton, Avatar, Chip, Button, Divider,
 } from '@mui/material';
@@ -43,14 +43,7 @@ function Post({ post, setCurrentId, showForm, setShowForm }) {
   const [aiMode, setAiMode] = useState('enhance');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [expanded, setExpanded] = useState(false);
-  const msgRef = useRef(null);
-  const [needsTrunc, setNeedsTrunc] = useState(false);
-
-  useEffect(() => {
-    if (msgRef.current) {
-      setNeedsTrunc(msgRef.current.scrollHeight > msgRef.current.clientHeight);
-    }
-  }, [post?.message]);
+  const needsTrunc = (post?.message?.length || 0) > 200;
 
   const roleIndex = post?.creator?.length % creatorRoles.length;
   const creatorRole = creatorRoles[roleIndex];
@@ -143,7 +136,6 @@ function Post({ post, setCurrentId, showForm, setShowForm }) {
         {post?.message && (
           <Box>
             <Typography
-              ref={msgRef}
               variant="body1"
               sx={{
                 color: '#334155', fontSize: '0.9375rem', lineHeight: 1.7, whiteSpace: 'pre-wrap',
