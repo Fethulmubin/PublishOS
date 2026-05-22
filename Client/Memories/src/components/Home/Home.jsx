@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
-import { getPost } from '../../actions/posts';
+import FeedSidebar from '../Common/FeedSidebar';
 import { useSearchParams } from 'react-router-dom';
 import CommentBar from '../CommentBar/CommentBar';
 
@@ -18,34 +17,38 @@ const Home = ({ showForm: showFormProp, setShowForm: setShowFormProp }) => {
   const isCommenting = Boolean(searchParams.get('id'));
   const commentRef = useRef();
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPost());
-  }, [dispatch]);
-
   useEffect(() => {
     if (showForm || commentRef.current) {
       commentRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [isCommenting, showForm]);
 
+  const handleNewPost = () => setShowForm(true);
+
   return (
     <Box sx={{ position: 'relative' }}>
       <Box
-        id="posts"
         sx={{
           filter: isCommenting || showForm ? 'blur(4px)' : 'none',
           transition: 'filter 0.3s ease',
           pointerEvents: isCommenting || showForm ? 'none' : 'auto',
         }}
       >
-        <Posts
-          setShowForm={setShowForm}
-          showForm={showForm}
-          currentId={currentId}
-          setCurrentId={setCurrentId}
-        />
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={8}>
+            <Posts
+              setShowForm={setShowForm}
+              showForm={showForm}
+              currentId={currentId}
+              setCurrentId={setCurrentId}
+            />
+          </Grid>
+          <Grid item xs={12} lg={4} sx={{ display: { xs: 'none', lg: 'block' } }}>
+            <Box sx={{ position: 'sticky', top: 88 }}>
+              <FeedSidebar onNewPost={handleNewPost} />
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
 
       {isCommenting && (
@@ -92,7 +95,6 @@ const Home = ({ showForm: showFormProp, setShowForm: setShowFormProp }) => {
             <Form
               currentId={currentId}
               setCurrentId={setCurrentId}
-              getPost={getPost}
               setShowForm={setShowForm}
               showForm={showForm}
             />

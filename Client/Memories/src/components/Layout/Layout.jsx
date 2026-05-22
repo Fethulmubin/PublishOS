@@ -22,7 +22,7 @@ const Layout = ({ children, onNewPost }) => {
 
   const config = Object.entries(pageConfig).find(([path]) =>
     location.pathname.startsWith(path)
-  )?.[1] || { title: 'Feed', maxWidth: 720 };
+  )?.[1] || { title: 'Feed', maxWidth: 1200 };
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8fafc' }}>

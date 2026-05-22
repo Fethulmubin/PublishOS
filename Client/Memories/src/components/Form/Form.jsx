@@ -17,7 +17,7 @@ import AIEnhanceDialog from '../Common/AIEnhanceDialog';
 import SchedulePostDialog from '../Common/SchedulePostDialog';
 
 function Form({ currentId, setCurrentId, showForm, setShowForm }) {
-  const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null);
+  const post = useSelector((state) => currentId ? (state.posts.posts || state.posts).find((p) => p._id === currentId) : null);
   const user = useSelector((state) => state?.auth?.authData);
   const form = useRef();
   const dispatch = useDispatch();

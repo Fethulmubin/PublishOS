@@ -32,7 +32,7 @@ API.interceptors.response.use(
 );
 
 // Posts
-export const fetchPosts = ()=> axios.get(`${url}posts`);
+export const fetchPosts = (page = 1, limit = 10)=> axios.get(`${url}posts`, { params: { page, limit } });
 export const createPosts = (newPost)=> API.post('posts', newPost );
 export const updatePosts = (id, updatedPost)=> API.patch(`posts/${id}`, updatedPost );
 export const deletePosts = (id)=> API.delete(`posts/${id}` );

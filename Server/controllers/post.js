@@ -4,8 +4,13 @@ import userModel from "../models/users.js";
 
 export const getPosts = async (req, res) => {
     try {
-        const postMessages = await postMessage.find();
-        res.status(200).json(postMessages);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const total = await postMessage.countDocuments();
+        const postMessages = await postMessage.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+        const hasMore = skip + limit < total;
+        res.status(200).json({ data: postMessages, currentPage: page, totalPages: Math.ceil(total / limit), hasMore });
     } catch (error) {
         res.status(404).json({ msg: error.message });
     }
