@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Button, Chip, Avatar, Divider, CircularProgress } from '@mui/material';
+import { Box, Typography, Button, Chip, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -8,6 +8,8 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useNavigate } from 'react-router-dom';
 import { getScheduledPosts } from '../../api';
+import LinkedInPublishDialog from './LinkedInPublishDialog';
+import YouTubePublishDialog from './YouTubePublishDialog';
 
 const quickActions = [
   { icon: <AddIcon />, label: 'Create Post', color: '#6366f1', bg: 'rgba(99,102,241,0.1)', action: 'newPost' },
@@ -36,6 +38,8 @@ const FeedSidebar = ({ onNewPost }) => {
   const navigate = useNavigate();
   const [scheduledPosts, setScheduledPosts] = useState([]);
   const [loadingSchedule, setLoadingSchedule] = useState(true);
+  const [linkedInOpen, setLinkedInOpen] = useState(false);
+  const [youtubeOpen, setYoutubeOpen] = useState(false);
 
   useEffect(() => {
     getScheduledPosts()
@@ -50,14 +54,13 @@ const FeedSidebar = ({ onNewPost }) => {
   const handleAction = (action) => {
     if (action === 'newPost') onNewPost?.();
     else if (action === 'schedule') navigate('/schedule');
-    else if (action === 'linkedin') navigate('/schedule');
-    else if (action === 'youtube') navigate('/schedule');
+    else if (action === 'linkedin') setLinkedInOpen(true);
+    else if (action === 'youtube') setYoutubeOpen(true);
     else if (action === 'instagram') window.open('https://instagram.com', '_blank');
   };
 
   return (
     <Box>
-      {/* Quick Actions */}
       <Box sx={{ bgcolor: '#ffffff', borderRadius: 3, border: '1px solid rgba(0,0,0,0.06)', p: 2, mb: 2.5 }}>
         <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.8125rem', color: '#0f172a', mb: 1.5 }}>
           Quick Actions
@@ -82,7 +85,6 @@ const FeedSidebar = ({ onNewPost }) => {
         </Box>
       </Box>
 
-      {/* Scheduled Posts */}
       <Box sx={{ bgcolor: '#ffffff', borderRadius: 3, border: '1px solid rgba(0,0,0,0.06)', p: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
           <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: '0.8125rem', color: '#0f172a' }}>
@@ -132,6 +134,9 @@ const FeedSidebar = ({ onNewPost }) => {
           </Box>
         )}
       </Box>
+
+      <LinkedInPublishDialog open={linkedInOpen} onClose={() => setLinkedInOpen(false)} />
+      <YouTubePublishDialog open={youtubeOpen} onClose={() => setYoutubeOpen(false)} />
     </Box>
   );
 };

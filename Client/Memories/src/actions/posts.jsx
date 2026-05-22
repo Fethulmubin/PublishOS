@@ -3,7 +3,8 @@ import * as api from '../api'
 export const getPost = (page = 1) => async(dispatch) => {
 try {
     const {data} = await api.fetchPosts(page)
-    dispatch({type : 'FETCH_ALL', payload : { posts: data.data, hasMore: data.hasMore, currentPage: data.currentPage }})
+    const postsArray = Array.isArray(data) ? data : (data.data || []);
+    dispatch({type : 'FETCH_ALL', payload : { posts: postsArray, hasMore: data.hasMore ?? true, currentPage: data.currentPage ?? page }})
 } catch (error) {
     console.log(error.message)
     throw error;
@@ -13,7 +14,8 @@ try {
 export const getMorePosts = (page) => async(dispatch) => {
 try {
     const {data} = await api.fetchPosts(page)
-    dispatch({type : 'FETCH_MORE', payload : { posts: data.data, hasMore: data.hasMore, currentPage: data.currentPage }})
+    const postsArray = Array.isArray(data) ? data : (data.data || []);
+    dispatch({type : 'FETCH_MORE', payload : { posts: postsArray, hasMore: data.hasMore ?? false, currentPage: data.currentPage ?? page }})
 } catch (error) {
     console.log(error.message)
     throw error;
