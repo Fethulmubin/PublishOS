@@ -9,6 +9,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
+import publishosLogo from '../../assets/publishos_logo.svg';
 
 const TopHeader = ({ onNewPost, pageTitle = 'Feed', onToggleMobile }) => {
   const user = useSelector((state) => state?.auth?.authData);
@@ -56,9 +57,7 @@ const TopHeader = ({ onNewPost, pageTitle = 'Feed', onToggleMobile }) => {
           <MenuIcon />
         </IconButton>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Box sx={{ width: 32, height: 32, borderRadius: 1.5, bgcolor: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: '0.875rem', lineHeight: 1 }}>P</Typography>
-          </Box>
+          <Box component="img" src={publishosLogo} alt="PublishOS" sx={{ height: 28, display: 'block' }} />
           <Typography variant="h6" sx={{ fontWeight: 800, fontSize: '1.1rem', color: '#0f172a', display: { xs: 'none', sm: 'block' } }}>
             PublishOS
           </Typography>

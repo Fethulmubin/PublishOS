@@ -22,7 +22,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import memories from '../../assets/memories.png';
+import publishosLogo from '../../assets/publishos_logo.svg';
 
 const drawerWidth = 260;
 
@@ -62,7 +62,7 @@ const SidebarContent = ({ onNavigate }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box sx={{ px: 2.5, py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Box component="img" src={memories} alt="Memories" sx={{ height: 32, objectFit: 'contain' }} />
+        <Box component="img" src={publishosLogo} alt="PublishOS" sx={{ height: 28, objectFit: 'contain' }} />
       </Box>
 
       <Divider />
