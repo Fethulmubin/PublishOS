@@ -7,6 +7,7 @@ import theme from './theme';
 import Layout from './components/Layout/Layout';
 import Home from './components/Home/Home';
 import Auth from './components/Auth/Auth';
+import ProtectedRoute from './components/Common/ProtectedRoute';
 import Dashboard from './components/Pages/Dashboard/Dashboard';
 import AIStudio from './components/Pages/AIStudio/AIStudio';
 import Schedule from './components/Pages/Schedule/Schedule';
@@ -45,9 +46,11 @@ function App() {
                 key={path}
                 path={path}
                 element={
-                  <Layout onNewPost={() => setShowFormGlobal(true)}>
-                    {element}
-                  </Layout>
+                  <ProtectedRoute>
+                    <Layout onNewPost={() => setShowFormGlobal(true)}>
+                      {element}
+                    </Layout>
+                  </ProtectedRoute>
                 }
               />
             ))}
