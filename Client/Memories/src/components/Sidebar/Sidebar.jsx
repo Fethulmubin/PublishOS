@@ -62,7 +62,7 @@ const SidebarContent = ({ onNavigate }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box sx={{ px: 2.5, py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <Box component="img" src={publishosLogo} alt="PublishOS" sx={{ height: 28, objectFit: 'contain' }} />
+        <Box component="img" src={publishosLogo} alt="PublishOS" sx={{ height: 36, objectFit: 'contain' }} />
       </Box>
 
       <Divider />

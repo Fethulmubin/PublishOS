@@ -57,7 +57,7 @@ const TopHeader = ({ onNewPost, pageTitle = 'Feed', onToggleMobile }) => {
           <MenuIcon />
         </IconButton>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Box component="img" src={publishosLogo} alt="PublishOS" sx={{ height: 28, display: 'block' }} />
+          <Box component="img" src={publishosLogo} alt="PublishOS" sx={{ height: 36, display: 'block' }} />
           <Typography variant="h6" sx={{ fontWeight: 800, fontSize: '1.1rem', color: '#0f172a', display: { xs: 'none', sm: 'block' } }}>
             PublishOS
           </Typography>
