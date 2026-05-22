@@ -8,6 +8,7 @@ const platforms = [
   { value: 'twitter', label: 'Twitter', color: '#1DA1F2' },
   { value: 'instagram', label: 'Instagram', color: '#E4405F' },
   { value: 'facebook', label: 'Facebook', color: '#1877F2' },
+  { value: 'youtube', label: 'YouTube', color: '#FF0000' },
 ];
 
 const SchedulePostDialog = ({ open, onClose, onCreated, initialContent, editPost }) => {

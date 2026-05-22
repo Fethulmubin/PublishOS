@@ -97,5 +97,9 @@ export const updateThemePreference = (data) => API.patch('api/settings/theme', d
 // Integrations
 export const getConnectedAccounts = () => API.get('api/integrations');
 export const getLinkedInAuthUrl = () => API.get('api/integrations/auth/linkedin/url');
+export const getYouTubeAuthUrl = () => API.get('api/integrations/auth/youtube/url');
 export const disconnectPlatform = (platform) => API.delete(`api/integrations/disconnect/${platform}`);
 export const publishToLinkedIn = (payload) => API.post('api/integrations/linkedin/post', payload);
+export const publishToYouTube = (payload) => API.post('api/integrations/youtube/post', payload);
+export const getYouTubeAnalytics = (params) => API.get('api/integrations/youtube/analytics', { params });
+export const getYouTubeVideos = (params) => API.get('api/integrations/youtube/videos', { params });

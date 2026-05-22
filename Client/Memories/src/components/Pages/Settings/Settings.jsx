@@ -20,10 +20,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddLinkIcon from '@mui/icons-material/AddLink';
 import ModernSectionHeader from '../../Common/ModernSectionHeader';
 import LinkedInStatusCard from '../../Common/LinkedInStatusCard';
+import YouTubeStatusCard from '../../Common/YouTubeStatusCard';
 import GenericSkeleton from '../../Common/LoadingSkeleton';
 import {
   getSettings, updateSettings, changePassword, getConnectedAccounts,
-  getLinkedInAuthUrl, disconnectPlatform,
+  getLinkedInAuthUrl, getYouTubeAuthUrl, disconnectPlatform,
 } from '../../../api';
 
 const settingsSections = [
@@ -57,8 +58,10 @@ const Settings = () => {
   // Integrations state
   const [accounts, setAccounts] = useState([]);
   const [linkedInLoading, setLinkedInLoading] = useState(false);
+  const [youtubeLoading, setYoutubeLoading] = useState(false);
 
   const linkedInAccount = accounts.find((a) => a.platform === 'linkedin');
+  const youtubeAccount = accounts.find((a) => a.platform === 'youtube');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +102,14 @@ const Settings = () => {
       window.history.replaceState({}, '', window.location.pathname);
     } else if (params.get('linkedin') === 'error') {
       setSnackbar({ open: true, message: 'Failed to connect LinkedIn. Please try again.', severity: 'error' });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    if (params.get('youtube') === 'connected') {
+      setSnackbar({ open: true, message: 'YouTube connected successfully!', severity: 'success' });
+      getConnectedAccounts().then((res) => setAccounts(res.data?.data || [])).catch(() => {});
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (params.get('youtube') === 'error') {
+      setSnackbar({ open: true, message: 'Failed to connect YouTube. Please try again.', severity: 'error' });
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
@@ -155,6 +166,35 @@ const Settings = () => {
       setSnackbar({ open: true, message: 'Failed to disconnect LinkedIn.', severity: 'error' });
     } finally {
       setLinkedInLoading(false);
+    }
+  };
+
+  const handleConnectYouTube = async () => {
+    setYoutubeLoading(true);
+    try {
+      const { data } = await getYouTubeAuthUrl();
+      if (data?.data?.url) {
+        window.location.href = data.data.url;
+      }
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Failed to get YouTube auth URL.', severity: 'error' });
+    } finally {
+      setYoutubeLoading(false);
+    }
+  };
+
+  const handleDisconnectYouTube = async () => {
+    setYoutubeLoading(true);
+    try {
+      await disconnectPlatform('youtube');
+      setAccounts((prev) => prev.map((a) =>
+        a.platform === 'youtube' ? { ...a, isConnected: false, accessToken: null } : a
+      ));
+      setSnackbar({ open: true, message: 'YouTube disconnected successfully.', severity: 'success' });
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Failed to disconnect YouTube.', severity: 'error' });
+    } finally {
+      setYoutubeLoading(false);
     }
   };
 
@@ -362,7 +402,13 @@ const Settings = () => {
             onConnect={handleConnectLinkedIn}
             onDisconnect={handleDisconnectLinkedIn}
           />
-          {['Twitter', 'Instagram', 'YouTube'].map((name) => (
+          <YouTubeStatusCard
+            account={youtubeAccount}
+            loading={youtubeLoading}
+            onConnect={handleConnectYouTube}
+            onDisconnect={handleDisconnectYouTube}
+          />
+          {['Twitter', 'Instagram'].map((name) => (
             <Box key={name} sx={{
               bgcolor: '#ffffff', borderRadius: 2.5, border: '1px solid rgba(0,0,0,0.06)',
               p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', opacity: 0.6,

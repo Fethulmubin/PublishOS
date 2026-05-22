@@ -10,6 +10,7 @@ import SchedulePostDialog from '../../Common/SchedulePostDialog';
 import EmptyState from '../../Common/EmptyState';
 import GenericSkeleton from '../../Common/LoadingSkeleton';
 import LinkedInPublishDialog from '../../Common/LinkedInPublishDialog';
+import YouTubePublishDialog from '../../Common/YouTubePublishDialog';
 import { getScheduledPosts, updateScheduledPost, deleteScheduledPost } from '../../../api';
 
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -46,6 +47,8 @@ const Schedule = () => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [publishPost, setPublishPost] = useState(null);
   const [linkedInOpen, setLinkedInOpen] = useState(false);
+  const [youtubePublishOpen, setYoutubePublishOpen] = useState(false);
+  const [youtubePublishContent, setYoutubePublishContent] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const calendarDays = generateCalendarDays();
   const currentMonth = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
@@ -79,8 +82,14 @@ const Schedule = () => {
   }, {});
 
   const handlePublishNow = (post) => {
-    setPublishPost(post);
-    setLinkedInOpen(true);
+    const platform = post.platforms?.[0] || 'linkedin';
+    if (platform === 'youtube') {
+      setYoutubePublishContent(post.content || '');
+      setYoutubePublishOpen(true);
+    } else {
+      setPublishPost(post);
+      setLinkedInOpen(true);
+    }
   };
 
   const handleEdit = (post) => {
@@ -233,6 +242,11 @@ const Schedule = () => {
       </Grid>
 
       <SchedulePostDialog open={scheduleDialogOpen} onClose={handleScheduleDialogClose} onCreated={fetchData} editPost={editPost} />
+      <YouTubePublishDialog
+        open={youtubePublishOpen}
+        onClose={() => { setYoutubePublishOpen(false); setYoutubePublishContent(''); }}
+        initialContent={youtubePublishContent}
+      />
       {publishPost && (
         <LinkedInPublishDialog
           open={linkedInOpen}
