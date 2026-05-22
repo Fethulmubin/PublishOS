@@ -9,7 +9,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import publishosLogo from '../../assets/publishos_logo.svg';
+import publishosLogo from '../../assets/publishos_logo.png';
 
 const TopHeader = ({ onNewPost, pageTitle = 'Feed', onToggleMobile }) => {
   const user = useSelector((state) => state?.auth?.authData);
