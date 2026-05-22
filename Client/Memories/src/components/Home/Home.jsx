@@ -44,7 +44,7 @@ const Home = ({ showForm: showFormProp, setShowForm: setShowFormProp }) => {
             />
           </Grid>
           <Grid item xs={12} lg={4} sx={{ display: { xs: 'none', lg: 'block' } }}>
-            <Box sx={{ position: 'sticky', top: 88 }}>
+            <Box sx={{ position: 'sticky', top: 88, maxHeight: 'calc(100vh - 106px)', overflowY: 'auto', '&::-webkit-scrollbar': { width: 4 }, '&::-webkit-scrollbar-thumb': { bgcolor: '#cbd5e1', borderRadius: 2 } }}>
               <FeedSidebar onNewPost={handleNewPost} />
             </Box>
           </Grid>
