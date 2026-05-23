@@ -95,6 +95,12 @@ const Landing = () => {
   const navigate = useNavigate();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  const scrollTo = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setMobileNavOpen(false);
+  };
+
   return (
     <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', color: '#1e293b', fontFamily: "'Inter', sans-serif" }}>
       {/* NAV */}
@@ -107,7 +113,7 @@ const Landing = () => {
             </Box>
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3 }}>
               {['Features', 'Showcase', 'Pricing'].map((item) => (
-                <Typography key={item} variant="body2" sx={{ fontWeight: 500, color: '#64748b', cursor: 'pointer', '&:hover': { color: '#6366f1' } }}>{item}</Typography>
+                <Typography key={item} variant="body2" onClick={() => scrollTo(item.toLowerCase())} sx={{ fontWeight: 500, color: '#64748b', cursor: 'pointer', '&:hover': { color: '#6366f1' } }}>{item}</Typography>
               ))}
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -121,7 +127,7 @@ const Landing = () => {
           {mobileNavOpen && (
             <Box sx={{ pb: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               {['Features', 'Showcase', 'Pricing'].map((item) => (
-                <Typography key={item} variant="body2" sx={{ fontWeight: 500, color: '#64748b', py: 0.5 }}>{item}</Typography>
+                <Typography key={item} variant="body2" onClick={() => scrollTo(item.toLowerCase())} sx={{ fontWeight: 500, color: '#64748b', py: 0.5, cursor: 'pointer' }}>{item}</Typography>
               ))}
               <Button variant="outlined" fullWidth onClick={() => navigate('/auth')} sx={{ borderRadius: 2, fontWeight: 600 }}>Sign In</Button>
             </Box>
@@ -146,7 +152,7 @@ const Landing = () => {
             <Button variant="contained" size="large" onClick={() => navigate('/auth')} endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 2, px: 4, py: 1.5, fontWeight: 700, fontSize: '1rem' }}>
               Start Creating Free
             </Button>
-            <Button variant="outlined" size="large" sx={{ borderRadius: 2, px: 4, py: 1.5, fontWeight: 600, fontSize: '1rem', borderColor: 'rgba(0,0,0,0.12)' }}>
+            <Button variant="outlined" size="large" onClick={() => scrollTo('features')} sx={{ borderRadius: 2, px: 4, py: 1.5, fontWeight: 600, fontSize: '1rem', borderColor: 'rgba(0,0,0,0.12)' }}>
               See How It Works
             </Button>
           </Box>
