@@ -73,7 +73,7 @@ const Auth = () => {
     const Token = res?.credential;
     try {
       dispatch({ type: 'AUTH', data: { result: profileObj, token: Token } });
-      navigate('/');
+      navigate('/feed');
     } catch (error) {
       console.error('Google login failed', error);
     }

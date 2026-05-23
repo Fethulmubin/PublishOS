@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Box, Typography, Button, Container, Grid, Chip, Avatar, Divider, TextField, IconButton } from '@mui/material';
+import { Box, Typography, Button, Container, Grid, Chip, Avatar, Divider, TextField, IconButton, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -93,6 +94,7 @@ const platformColors = { linkedin: '#0A66C2', youtube: '#FF0000', instagram: '#E
 
 const Landing = () => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.authData);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const scrollTo = (id) => {
@@ -100,6 +102,8 @@ const Landing = () => {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setMobileNavOpen(false);
   };
+
+  const goToApp = () => navigate(user ? '/feed' : '/auth');
 
   return (
     <Box sx={{ bgcolor: '#f8fafc', minHeight: '100vh', color: '#1e293b', fontFamily: "'Inter', sans-serif" }}>
@@ -117,8 +121,25 @@ const Landing = () => {
               ))}
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Button variant="text" onClick={() => navigate('/auth')} sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', display: { xs: 'none', sm: 'inline-flex' } }}>Sign In</Button>
-              <Button variant="contained" onClick={() => navigate('/auth')} sx={{ borderRadius: 2, px: 2.5, py: 0.8, fontWeight: 600, fontSize: '0.8125rem' }}>Get Started Free</Button>
+              {user ? (
+                <>
+                  <Avatar
+                    src={user?.picture || user?.imageUrl}
+                    alt={user?.name}
+                    onClick={() => navigate('/feed')}
+                    sx={{ width: 36, height: 36, cursor: 'pointer', border: '2px solid #6366f1' }}
+                  />
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: '#1e293b', display: { xs: 'none', sm: 'block' } }}>{user?.name}</Typography>
+                  <Tooltip title="Go to Feed">
+                    <Button variant="contained" size="small" onClick={() => navigate('/feed')} sx={{ borderRadius: 2, fontWeight: 600, fontSize: '0.75rem', whiteSpace: 'nowrap' }}>Dashboard</Button>
+                  </Tooltip>
+                </>
+              ) : (
+                <>
+                  <Button variant="text" onClick={() => navigate('/auth')} sx={{ fontWeight: 600, fontSize: '0.8125rem', color: '#475569', display: { xs: 'none', sm: 'inline-flex' } }}>Sign In</Button>
+                  <Button variant="contained" onClick={() => navigate('/auth')} sx={{ borderRadius: 2, px: 2.5, py: 0.8, fontWeight: 600, fontSize: '0.8125rem' }}>Get Started Free</Button>
+                </>
+              )}
               <IconButton onClick={() => setMobileNavOpen(!mobileNavOpen)} sx={{ display: { md: 'none' }, color: '#64748b' }}>
                 {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
               </IconButton>
@@ -129,7 +150,11 @@ const Landing = () => {
               {['Features', 'Showcase', 'Pricing'].map((item) => (
                 <Typography key={item} variant="body2" onClick={() => scrollTo(item.toLowerCase())} sx={{ fontWeight: 500, color: '#64748b', py: 0.5, cursor: 'pointer' }}>{item}</Typography>
               ))}
-              <Button variant="outlined" fullWidth onClick={() => navigate('/auth')} sx={{ borderRadius: 2, fontWeight: 600 }}>Sign In</Button>
+              {user ? (
+                <Button variant="outlined" fullWidth onClick={() => navigate('/feed')} sx={{ borderRadius: 2, fontWeight: 600 }}>Dashboard</Button>
+              ) : (
+                <Button variant="outlined" fullWidth onClick={() => navigate('/auth')} sx={{ borderRadius: 2, fontWeight: 600 }}>Sign In</Button>
+              )}
             </Box>
           )}
         </Container>
@@ -149,8 +174,8 @@ const Landing = () => {
             Write once, amplify everywhere. PublishOS lets you create content, enhance it with AI, schedule it, and publish to LinkedIn, YouTube, and more — all from a single beautiful dashboard.
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-            <Button variant="contained" size="large" onClick={() => navigate('/auth')} endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 2, px: 4, py: 1.5, fontWeight: 700, fontSize: '1rem' }}>
-              Start Creating Free
+            <Button variant="contained" size="large" onClick={goToApp} endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 2, px: 4, py: 1.5, fontWeight: 700, fontSize: '1rem' }}>
+              {user ? 'Go to Dashboard' : 'Start Creating Free'}
             </Button>
             <Button variant="outlined" size="large" onClick={() => scrollTo('features')} sx={{ borderRadius: 2, px: 4, py: 1.5, fontWeight: 600, fontSize: '1rem', borderColor: 'rgba(0,0,0,0.12)' }}>
               See How It Works
@@ -327,8 +352,8 @@ const Landing = () => {
           <Typography variant="body1" sx={{ color: '#64748b', fontSize: '1rem', mb: 4, lineHeight: 1.7 }}>
             Join creators who've stopped juggling tabs and started publishing from one place. Free during beta.
           </Typography>
-          <Button variant="contained" size="large" onClick={() => navigate('/auth')} endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 2, px: 5, py: 1.5, fontWeight: 700, fontSize: '1rem' }}>
-            Get Started Free
+          <Button variant="contained" size="large" onClick={goToApp} endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 2, px: 5, py: 1.5, fontWeight: 700, fontSize: '1rem' }}>
+            {user ? 'Go to Dashboard' : 'Get Started Free'}
           </Button>
         </Container>
       </Box>
