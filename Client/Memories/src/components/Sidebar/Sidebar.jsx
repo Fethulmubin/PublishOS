@@ -28,7 +28,7 @@ const drawerWidth = 260;
 
 const navItems = [
   { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { label: 'Feed', icon: <FeedIcon />, path: '/' },
+  { label: 'Feed', icon: <FeedIcon />, path: '/feed' },
   { label: 'AI Studio', icon: <AutoAwesomeIcon />, path: '/ai-studio' },
   { label: 'Schedule', icon: <CalendarMonthIcon />, path: '/schedule' },
   { label: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
@@ -43,10 +43,7 @@ const SidebarContent = ({ onNavigate }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.authData);
 
-  const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path) => location.pathname.startsWith(path);
 
   const handleNav = (path) => {
     navigate(path);

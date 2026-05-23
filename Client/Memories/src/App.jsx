@@ -7,6 +7,7 @@ import theme from './theme';
 import Layout from './components/Layout/Layout';
 import Home from './components/Home/Home';
 import Auth from './components/Auth/Auth';
+import Landing from './components/Landing/Landing';
 import ProtectedRoute from './components/Common/ProtectedRoute';
 import Dashboard from './components/Pages/Dashboard/Dashboard';
 import AIStudio from './components/Pages/AIStudio/AIStudio';
@@ -21,7 +22,6 @@ function App() {
   const [showFormGlobal, setShowFormGlobal] = useState(false);
 
   const pageRoutes = [
-    { path: '/', element: <Home showForm={showFormGlobal} setShowForm={setShowFormGlobal} /> },
     { path: '/feed', element: <Home showForm={showFormGlobal} setShowForm={setShowFormGlobal} /> },
     { path: '/dashboard', element: <Dashboard /> },
     { path: '/ai-studio', element: <AIStudio /> },
@@ -41,6 +41,8 @@ function App() {
       >
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
             {pageRoutes.map(({ path, element }) => (
               <Route
                 key={path}
@@ -54,7 +56,6 @@ function App() {
                 }
               />
             ))}
-            <Route path="/auth" element={<Auth />} />
           </Routes>
           <Routes>
             {pageRoutes.map(({ path }) => (
